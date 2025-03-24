@@ -4,6 +4,7 @@
     import BadgeCircle from "../icons/badge-circle.svelte";
     import BadgeSquare from "../icons/badge-square.svelte";
     import BadgeStar from "../icons/badge-star.svelte";
+    import "../styles.css";
 
     const badges = [
         {
