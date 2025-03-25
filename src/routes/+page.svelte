@@ -1,101 +1,131 @@
 <script lang="ts">
+    import "../styles.css";
     import LogosCarrousel from "../components/logos-carrousel.svelte";
     import RemainingTime from "../components/remaining-time.svelte";
+    import ImagesCarrousel from "../components/images-carrousel.svelte";
+    import BrandInstagram from "../components/brand-instagram.svelte";
     import BadgeCircle from "../icons/badge-circle.svelte";
     import BadgeSquare from "../icons/badge-square.svelte";
     import BadgeStar from "../icons/badge-star.svelte";
 
     const badges = [
         {
-            badge: BadgeCircle,
-            title: "Carnet La Arenosa",
-            price: "900 mil pesos",
-            link: "#arenosa",
+            icon: BadgeCircle,
+            title: "Carnet Puerta de Oro",
+            price: ["COP$900.000", "USD$300"],
+            link: "#puerta-oro",
         },
         {
-            badge: BadgeSquare,
-            title: "Carnet La Arenosa",
-            price: "900 mil pesos",
-            link: "#arenosa",
+            icon: BadgeSquare,
+            title: "Carnet Curramba",
+            price: ["COP$330.000", "USD$100"],
+            link: "#curramba",
         },
         {
-            badge: BadgeStar,
+            icon: BadgeStar,
             title: "Carnet La Arenosa",
-            price: "900 mil pesos",
+            price: ["COP$150.000", "USD$50"],
             link: "#arenosa",
         },
     ];
 </script>
 
-<header class="flex mb-8 relative">
+<header class="flex p-8 relative">
     <section class="w-1/4">
         <img src="coneic2025.webp" alt="Logo del CONEIC 2025" />
     </section>
-    <section class="w-3/4 flex flex-col-reverse px-4 py-16">
-        <h1 class="text-6xl">Congreso Nacional de Estudiantes de Ingeniería Civil</h1>
+    <section class="w-3/4 flex flex-col-reverse px-8 py-4 font-potta">
+        <h1 class="text-6xl">
+            <span class="text-barranquilla-green">Congreso Nacional</span>
+            <span class="text-barranquilla-blue">de Estudiantes</span>
+            <span class="text-barranquilla-red">de Ingeniería Civil</span>
+        </h1>
         <h2 class="text-2xl">Barranquilla, 2025</h2>
     </section>
 </header>
 
-<main class="grid grid-rows-4 grid-cols-3 gap-2 h-screen mb-8">
-    <article class="row-span-3 p-4 rounded-md border-solid border-1 shadow-md">
+<main class="grid grid-rows-4 grid-cols-3 gap-4 h-screen mb-8 justify-center align-middle p-8">
+    <article class="row-span-3 rounded-md border-solid border-1 shadow-md overflow-hidden">
         <iframe
-            src="https://calendar.google.com/calendar/embed?wkst=2&ctz=America%2FBogota&showPrint=0&showTz=0&mode=AGENDA&showTabs=0&showNav=0&showCalendars=0&title&src=NTM0NDIzY2MwOGY5NzE1MzY3ZmFmNjlhZGZkNWU2MzhhZWEzYzY3NjcxY2Y3NzIzYWRiODhhY2RkOGE4MDdjM0Bncm91cC5jYWxlbmRhci5nb29nbGUuY29t&color=%233F51B5"
+            src="https://calendar.google.com/calendar/embed?wkst=2&ctz=America%2FBogota&showPrint=0&showTz=0&mode=AGENDA&showTabs=0&showNav=0&showCalendars=0&src=NTM0NDIzY2MwOGY5NzE1MzY3ZmFmNjlhZGZkNWU2MzhhZWEzYzY3NjcxY2Y3NzIzYWRiODhhY2RkOGE4MDdjM0Bncm91cC5jYWxlbmRhci5nb29nbGUuY29t&color=%233F51B5"
             frameborder="0"
             scrolling="no"
             title="Calendario con eventos de ANEIC Colombia"
             class="w-full h-full"></iframe>
     </article>
 
-    <article class="row-span-2 p-4 rounded-md border-solid border-1 shadow-md">a</article>
+    <article class="row-span-2 p-4 rounded-md border-solid border-1 shadow-md">
+        <div class="flex flex-col h-full justify-center align-middle">
+            <p class="text-4xl text-center">
+                El <span class="text-barranquilla-yellow">CONEIC</span> es un espacio donde los estudiantes
+                pueden compartir su pasión por la ingeniería y encontrar inspiración en las experiencias
+                de otros.
+            </p>
+        </div>
+    </article>
 
     <article class="row-span-1 p-4 rounded-md border-solid border-1 shadow-md">
         <LogosCarrousel />
     </article>
 
-    <article class="row-span-1 p-4 rounded-md border-solid border-1 shadow-md">
-        <div class="h-full flex flex-col justify-center align-middle">
+    <article
+        class="row-span-1 p-4 rounded-md border-solid border-1 shadow-md bg-barranquilla-green">
+        <div class="h-full flex flex-col justify-center align-middle text-white">
             <RemainingTime />
         </div>
     </article>
 
     <article class="col-start-1 row-span-1 rounded-md border-solid border-1 shadow-md">
-        <div class="instagram-button h-full flex justify-center align-middle">
-            <div>
-                <a
-                    class="text-white text-2xl font-bold align-bottom"
-                    href="https://instagram.com/aneiccolombia">Síguenos en Instagram</a>
+        <div class="instagram-button h-full w-full flex justify-center align-middle p-4">
+            <div class="flex justify-center align-middle w-full">
+                <div class="w-1/4 stroke-white">
+                    <BrandInstagram />
+                </div>
+                <div class="w-3/4">
+                    <a
+                        class="text-white text-4xl font-bold align-bottom"
+                        href="https://instagram.com/aneiccolombia">Síguenos en Instagram</a>
+                </div>
             </div>
         </div>
     </article>
 
-    <article
-        class="col-start-2 row-start-3 row-span-2 p-4 rounded-md border-solid border-1 shadow-md">
-        galeria de fotos
+    <article class="col-start-2 row-start-3 row-span-2 rounded-md border-solid border-1 shadow-md">
+        <ImagesCarrousel />
     </article>
 
     <article
         class="col-start-3 row-start-3 row-span-2 p-4 rounded-md border-solid border-1 shadow-md">
-        <div class="h-full flex justify-center align-middle">
-            <div class="w-full">
-                {#each badges as badge}
-                    <article class="flex">
-                        <div class="w-1/4">
-                            <badge.badge />
-                        </div>
-                        <div class="w-3/4">
-                            <h4 class="text-2xl">{badge.title}</h4>
-                            <p>{badge.price}</p>
-                            <a href={badge.link}>Ver más</a>
-                        </div>
-                    </article>
-                {/each}
-            </div>
+        <div class="w-full">
+            {#each badges as badge}
+                <article class="flex">
+                    <div class="w-1/4">
+                        <badge.icon />
+                    </div>
+                    <div class="w-3/4">
+                        <h4 class="text-2xl">{badge.title}</h4>
+                        <p>{badge.price[0]} | {badge.price[1]}</p>
+                        <a href={badge.link} class="text-barranquilla-blue">Ver más ⯈</a>
+                    </div>
+                </article>
+            {/each}
         </div>
     </article>
 </main>
 
-<footer>Contacto Necesitas más ino Necesitas una carta de invitación</footer>
+<hr />
+<main class="bg-linear-to-r from-barranquilla-red to-barranquilla-yellow">
+    <div class="w-1/2 flex justify-center align-middle mx-auto">
+        <div class="w-1/4">
+            <BrandInstagram />
+        </div>
+        <div class="w-3/4 flex flex-col">
+            <button>¿Necesitas una carta de invitación?</button>
+        </div>
+    </div>
+</main>
+
+<hr />
 
 <style>
     .instagram-button {
