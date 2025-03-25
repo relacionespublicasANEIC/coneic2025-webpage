@@ -1,1 +1,10 @@
 @import "tailwindcss";
+
+@theme {
+    --font-bebas: "Bebas Neue", sans-serif;
+    --font-potta: "Potta One", system-ui;
+    --color-barranquilla-yellow: rgb(249, 191, 29);
+    --color-barranquilla-green: rgb(35, 187, 82);
+    --color-barranquilla-red: rgb(246, 46, 72);
+    --color-barranquilla-blue: rgb(11, 58, 99);
+}
