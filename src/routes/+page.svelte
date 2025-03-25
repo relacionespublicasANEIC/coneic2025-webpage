@@ -28,13 +28,13 @@
     ];
 </script>
 
-<header class="flex mb-8 relative">
-    <section class="w-1/4">
+<header class="md:flex mb-8 relative">
+    <section class="w-full md:w-1/4">
         <img src="coneic2025.webp" alt="Logo del CONEIC 2025" />
     </section>
-    <section class="w-3/4 flex flex-col-reverse px-4 py-16">
+    <section class="w-full md:w-3/4 flex flex-col-reverse px-4 py-16">
         <h1 class="text-6xl">Congreso Nacional de Estudiantes de Ingeniería Civil</h1>
-        <h2 class="text-2xl">Barranquilla, 2025</h2>
+        <h2 class="hidden md:block text-2xl">Barranquilla, 2025</h2>
     </section>
 </header>
 
