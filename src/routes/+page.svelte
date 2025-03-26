@@ -12,60 +12,76 @@
         {
             icon: BadgeCircle,
             title: "Carnet Puerta de Oro",
-            price: ["COP$900.000", "USD$300"],
-            link: "#puerta-oro",
+            price: ["COP$900.000", "USD$300", "900"],
+            link: "puerta-oro",
+            color: "bg-barranquilla-green",
+            features: [
+                "Incluye hoteles",
+                "Noche de gala",
+                "Kit de bienvenida",
+                "Asistencia a talleres",
+                "Visitas turisitcas",
+            ],
         },
         {
             icon: BadgeSquare,
             title: "Carnet Curramba",
-            price: ["COP$330.000", "USD$100"],
-            link: "#curramba",
+            price: ["COP$330.000", "USD$100", "330"],
+            link: "curramba",
+            color: "bg-barranquilla-yellow",
+            features: [
+                "Incluye hoteles",
+                "Noche de gala",
+                "Kit de bienvenida",
+                "Asistencia a talleres",
+            ],
         },
         {
             icon: BadgeStar,
             title: "Carnet La Arenosa",
-            price: ["COP$150.000", "USD$50"],
-            link: "#arenosa",
+            price: ["COP$150.000", "USD$50", "150"],
+            link: "arenosa",
+            color: "bg-barranquilla-red",
+            features: ["Incluye hoteles", "Noche de gala", "Kit de bienvenida"],
         },
     ];
 </script>
 
-<header class="flex p-8 relative">
-    <section class="w-1/4">
-        <img src="coneic2025.webp" alt="Logo del CONEIC 2025" />
-    </section>
-    <section class="w-3/4 flex flex-col-reverse px-8 py-4 font-potta">
-        <h1 class="text-6xl">
+<header class="flex flex-col md:flex-row p-8 relative justify-center align-middle">
+    <img class="w-full md:w-1/4" src="coneic2025.webp" alt="Logo del CONEIC 2025" />
+    <div
+        class="w-full md:w-3/4 text-center md:text-left flex flex-col-reverse px-0 md:px-8 md:py-4 font-potta">
+        <h1 class="text-4xl md:text-6xl">
             <span class="text-barranquilla-green">Congreso Nacional</span>
             <span class="text-barranquilla-blue">de Estudiantes</span>
             <span class="text-barranquilla-red">de Ingeniería Civil</span>
         </h1>
-        <h2 class="text-2xl">Barranquilla, 2025</h2>
-    </section>
+        <h2 class="hidden md:block text-2xl">Barranquilla, 2025</h2>
+    </div>
 </header>
 
-<main class="grid grid-rows-4 grid-cols-3 gap-4 h-screen mb-8 justify-center align-middle p-8">
+<main
+    class="md:grid md:grid-rows-4 md:grid-cols-3 gap-2 space-y-4 md:space-y-0 mb-8 justify-center align-middle px-8 justify-items-stretch">
     <article class="row-span-3 rounded-md border-solid border-1 shadow-md overflow-hidden">
         <iframe
             src="https://calendar.google.com/calendar/embed?wkst=2&ctz=America%2FBogota&showPrint=0&showTz=0&mode=AGENDA&showTabs=0&showNav=0&showCalendars=0&src=NTM0NDIzY2MwOGY5NzE1MzY3ZmFmNjlhZGZkNWU2MzhhZWEzYzY3NjcxY2Y3NzIzYWRiODhhY2RkOGE4MDdjM0Bncm91cC5jYWxlbmRhci5nb29nbGUuY29t&color=%233F51B5"
             frameborder="0"
             scrolling="no"
             title="Calendario con eventos de ANEIC Colombia"
-            class="w-full h-full"></iframe>
+            class="w-full h-96 md:h-full"></iframe>
     </article>
 
-    <article class="row-span-2 p-4 rounded-md border-solid border-1 shadow-md">
-        <div class="flex flex-col h-full justify-center align-middle">
-            <p class="text-4xl text-center">
-                El <span class="text-barranquilla-yellow">CONEIC</span> es un espacio donde los estudiantes
-                pueden compartir su pasión por la ingeniería y encontrar inspiración en las experiencias
-                de otros.
-            </p>
-        </div>
+    <article
+        class="row-span-2 p-4 rounded-md border-solid border-1 shadow-md flex flex-col align-middle justify-center">
+        <p class="text-4xl text-center align-middle">
+            El <span class="text-barranquilla-yellow">CONEIC</span> es un espacio donde los estudiantes
+            pueden compartir su pasión por la ingeniería y encontrar inspiración en las experiencias
+            de otros.
+        </p>
     </article>
 
     <article class="row-span-1 p-4 rounded-md border-solid border-1 shadow-md">
-        <LogosCarrousel />
+        <!-- <LogosCarrousel /> -->
     </article>
 
     <article
@@ -105,7 +121,7 @@
                     <div class="w-3/4">
                         <h4 class="text-2xl">{badge.title}</h4>
                         <p>{badge.price[0]} | {badge.price[1]}</p>
-                        <a href={badge.link} class="text-barranquilla-blue">Ver más ⯈</a>
+                        <a href={`#${badge.link}`} class="text-barranquilla-blue">Ver más ⯈</a>
                     </div>
                 </article>
             {/each}
@@ -113,19 +129,48 @@
     </article>
 </main>
 
-<hr />
-<main class="bg-linear-to-r from-barranquilla-red to-barranquilla-yellow">
-    <div class="w-1/2 flex justify-center align-middle mx-auto">
-        <div class="w-1/4">
-            <BrandInstagram />
-        </div>
-        <div class="w-3/4 flex flex-col">
-            <button>¿Necesitas una carta de invitación?</button>
-        </div>
+<main class="bg-linear-to-r from-barranquilla-red to-barranquilla-yellow shadow-md">
+    <div class="flex justify-center align-middle mx-auto">
+        <button class="text-4xl text-white p-4 cursor-pointer"
+            >¿Necesitas una carta de invitación?<br />Presiona aquí</button>
     </div>
 </main>
 
-<hr />
+<main
+    class="px-16 py-8 space-y-4 has-target:space-y-12 md:space-y-0 md:grid grid-cols-3 gap-6 justify-items-center justify-between align-middle">
+    {#each badges as badge}
+        <article
+            id={badge.link}
+            class="flex bg-amber-200 flex-col w-full md:w-3/4 rounded-md p-4 {badge.color} text-white shadow-md target:scale-110 target:shadow-2xl">
+            <h3 class="text-4xl text-center py-4">{badge.title}</h3>
+            <div class="relative flex">
+                <span class="absolute text-xl">COP$</span>
+                <p class="text-8xl text-center grow">{badge.price[2]}</p>
+                <span class="absolute text-xl bottom-4 right-0">mil</span>
+            </div>
+
+            <ul class="list-disc list-inside grow">
+                {#each badge.features as feat}
+                    <li>{feat}</li>
+                {/each}
+            </ul>
+
+            <form>
+                <script
+                  src="https://checkout.wompi.co/widget.js"
+                  data-render="button"
+                  data-public-key="pub_test_X0zDA9xoKdePzhd8a0x9HAez7HgGO2fH"
+                  data-currency="COP"
+                  data-amount-in-cents="4950000"
+                  data-reference="4XMPGKWWPKWQ"
+                  data-signature:integrity="37c8407747e595535433ef8f6a811d853cd943046624a0ec04662b17bbf33bf5"
+                ></script>
+              </form>
+
+            <button class="text-2xl mt-4">comprar</button>
+        </article>
+    {/each}
+</main>
 
 <style>
     .instagram-button {
