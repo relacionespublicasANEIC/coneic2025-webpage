@@ -23,8 +23,8 @@
 
 <br />
 
-<h4 class="hidden md:block text-center text-xl">Falta para el evento</h4>
-<div class="hidden md:block md:w-1/4 mx-auto">
+<h4 class="text-center text-xl">Falta para el evento</h4>
+<div class="w-full md:w-1/4 mx-auto">
     <RemainingTime />
 </div >
         
