@@ -1,43 +1,33 @@
 <script lang="ts">
-    import LogosCarrousel from "../components/logos-carrousel.svelte";
-    import RemainingTime from "../components/remaining-time.svelte";
-    import BadgeCircle from "../icons/badge-circle.svelte";
-    import BadgeSquare from "../icons/badge-square.svelte";
-    import BadgeStar from "../icons/badge-star.svelte";
     import "../styles.css";
+    import RemainingTime from "../components/remaining-time.svelte";
 
-    const badges = [
-        {
-            badge: BadgeCircle,
-            title: "Carnet La Arenosa",
-            price: "900 mil pesos",
-            link: "#arenosa",
-        },
-        {
-            badge: BadgeSquare,
-            title: "Carnet La Arenosa",
-            price: "900 mil pesos",
-            link: "#arenosa",
-        },
-        {
-            badge: BadgeStar,
-            title: "Carnet La Arenosa",
-            price: "900 mil pesos",
-            link: "#arenosa",
-        },
-    ];
 </script>
 
-<header class="md:flex mb-8 relative">
-    <section class="w-full md:w-1/4">
-        <img src="coneic2025.webp" alt="Logo del CONEIC 2025" />
-    </section>
-    <section class="w-full md:w-3/4 flex flex-col-reverse px-4 py-16">
-        <h1 class="text-6xl">Congreso Nacional de Estudiantes de Ingeniería Civil</h1>
+<header class="flex flex-col md:flex-row p-8 relative justify-center align-middle">
+    <img class="w-full md:w-1/4" src="coneic2025.webp" alt="Logo del CONEIC 2025" />
+    <div
+        class="w-full md:w-3/4 text-center md:text-left flex flex-col-reverse px-0 md:px-8 md:py-4 font-potta">
+        <h1 class="text-4xl md:text-6xl">
+            <span class="text-barranquilla-green">Congreso Nacional</span>
+            <span class="text-barranquilla-blue">de Estudiantes</span>
+            <span class="text-barranquilla-red">de Ingeniería Civil</span>
+        </h1>
         <h2 class="hidden md:block text-2xl">Barranquilla, 2025</h2>
-    </section>
+    </div>
 </header>
 
-<main class="flex justify-content align-middle">
-    <h2 class="text-4xl">Estamos consruyendo la página de tus sueños...</h2>
+<main class="flex flex-col justify-center align-middle">
+<h3 class="text-2xl md:text-4xl text-center">Estamos construyendo la página de tus sueños</h3>
+<a class="text-xl md:text-2xl text-center text-barranquilla-blue hover:text-purple-800" target="_blank" href="https://www.instagram.com/coneicco_oficial">Si quieres más información revisa nuestra cuenta de Instagram</a>
+
+<br />
+
+<h4 class="hidden md:block text-center text-xl">Falta para el evento</h4>
+<div class="hidden md:block md:w-1/4 mx-auto">
+    <RemainingTime />
+</div >
+        
 </main>
+
+    
