@@ -1,6 +1,7 @@
 <script lang="ts">
     import "../styles.css";
     import RemainingTime from "../components/remaining-time.svelte";
+
 </script>
 
 <header class="flex flex-col md:flex-row p-8 relative justify-center align-middle">
