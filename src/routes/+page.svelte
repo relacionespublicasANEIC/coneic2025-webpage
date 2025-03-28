@@ -17,7 +17,7 @@
     </div>
 </header>
 
-<main class="flex flex-col justify-center align-middle">
+<main class="p-8 pt-0 flex flex-col justify-center align-middle">
 <h3 class="text-2xl md:text-4xl text-center">Estamos construyendo la página de tus sueños</h3>
 <a class="text-xl md:text-2xl text-center text-barranquilla-blue hover:text-purple-800" target="_blank" href="https://www.instagram.com/coneicco_oficial">Si quieres más información revisa nuestra cuenta de Instagram</a>
 
