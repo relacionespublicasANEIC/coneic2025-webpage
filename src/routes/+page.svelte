@@ -15,6 +15,7 @@
             price: ["COP$900.000", "USD$300", "900"],
             link: "puerta-oro",
             color: "bg-barranquilla-green",
+            payment: "https://checkout.wompi.co/l/test_qbPtTR",
             features: [
                 "Incluye hoteles",
                 "Noche de gala",
@@ -29,6 +30,7 @@
             price: ["COP$330.000", "USD$100", "330"],
             link: "curramba",
             color: "bg-barranquilla-yellow",
+            payment: "https://checkout.wompi.co/l/test_74hfLB",
             features: [
                 "Incluye hoteles",
                 "Noche de gala",
@@ -42,6 +44,7 @@
             price: ["COP$150.000", "USD$50", "150"],
             link: "arenosa",
             color: "bg-barranquilla-red",
+            payment: "https://checkout.wompi.co/l/test_cwptJ3",
             features: ["Incluye hoteles", "Noche de gala", "Kit de bienvenida"],
         },
     ];
@@ -155,7 +158,7 @@
                 {/each}
             </ul>
 
-            <form>
+            <!-- <form>
                 <script
                   src="https://checkout.wompi.co/widget.js"
                   data-render="button"
@@ -165,9 +168,11 @@
                   data-reference="4XMPGKWWPKWQ"
                   data-signature:integrity="37c8407747e595535433ef8f6a811d853cd943046624a0ec04662b17bbf33bf5"
                 ></script>
-              </form>
+              </form> -->
 
-            <button class="text-2xl mt-4">comprar</button>
+            <button class="text-2xl mt-4">
+                <a href={badge.payment}>Paga por Wompi</a>
+            </button>
         </article>
     {/each}
 </main>
