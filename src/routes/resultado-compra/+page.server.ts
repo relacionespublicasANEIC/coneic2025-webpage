@@ -1,9 +1,22 @@
-import { WOMPI_ENDPOINT, REDIS_URL } from "$env/static/private";
+import { WOMPI_ENDPOINT, REDIS_URL, QR_CODE_KEY } from "$env/static/private";
 import { createClient } from "redis";
 import { error } from "@sveltejs/kit";
 import type { PageServerLoad } from "./$types";
 
 const redis = await createClient({ url: REDIS_URL }).connect();
+
+// Creates a hash to validate QR was created in this page.
+async function createHash(name: string, typeDocument: string, documentId: string): Promise<string> {
+    // Create input info.
+    let sourceString = `${typeDocument}${documentId}${name}${QR_CODE_KEY}`;
+    let encoder = new TextEncoder();
+    let sourceBytes = encoder.encode(sourceString);
+
+    // Create the hash.
+    let hashBytes = await crypto.subtle.digest("SHA-256", sourceBytes);
+    let hashString = Array.from(new Uint8Array(hashBytes)).map(i => i.toString(16).padStart(2, "0")).join("");
+    return hashString;
+};
 
 export const load: PageServerLoad = async ({ url }) => {
     let id = url.searchParams.get("id");
@@ -37,8 +50,10 @@ export const load: PageServerLoad = async ({ url }) => {
             break;
         case "APPROVED":
             title = "COMPLETADA"
-            message = await redis.json.get(id);
-            console.info("Redis db was called");
+            let trasanction = await redis.json.get(id).catch((_) => error(500, "Unable to request transaction info."));
+            let { legal_id, full_name, legal_id_type } = trasanction.customer_data;
+            let hash = await createHash(full_name, legal_id_type, legal_id).catch((_) => error(500, "Unable to create a hash for this transaction."));
+            message = { hash, trasanction };
             break;
         default:
             return error(400, "Body from wompi was malformed");
