@@ -20,19 +20,23 @@ export const load: PageServerLoad = async ({ url }) => {
     if (!body?.data?.id || body?.data?.id !== id) error(400, "Unable to fecth transaction info");
 
     // Check status of transaction.
-    let message;
+    let title, message;
     switch (body.data.status) {
         case "PENDING":
+            title = "PENDIENTE";
             message = "Estamos esperando aún que la transacción se complete.";
             break;
         case "DECLINED":
         case "ERROR":
+            title = "FALLIDA";
             message = body.data.status_message;
             break;
         case "VOIDED":
+            title = "CANCELADA";
             message = "La transacción fue cancelada";
             break;
         case "APPROVED":
+            title = "COMPLETADA"
             message = await redis.json.get(id);
             console.info("Redis db was called");
             break;
@@ -40,5 +44,5 @@ export const load: PageServerLoad = async ({ url }) => {
             return error(400, "Body from wompi was malformed");
     };
 
-    return { status: body.data.status, message };
+    return { status: body.data.status, title, message };
 };
