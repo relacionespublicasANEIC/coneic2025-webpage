@@ -20,16 +20,29 @@ export const POST: RequestHandler = async ({ request }) => {
         return json({ "message": "Skipped event." }, { status: 200 });
     };
 
+    //Posible values: PENDING, APPROVED, DECLINED, ERROR, VOIDED
     let transaction = body.data.transaction;
-    if (transaction.status === "DECLINED") {
-        await redis.incr("declined_request").catch((_) => console.error("Counter did not increment."));
-        return json({ "message": "Total declined requests incresed by one." }, { status: 200 });
+
+    // Transaction made with a card was cancelled.
+    if (transaction.status === "VOIDED") {
+        let multi = redis.multi();
+        multi.incr("failed_requests");
+        multi.decr("aproved_request");
+        multi.json.del(transaction.id);
+        await multi.exec().catch((_) => error(400, "State could not be updated in db."));
+    };
+
+    if (transaction.status === "DECLINED" || transaction.status === "ERROR") {
+        await redis.incr("failed_requests").catch((_) => console.error("Counter did not increment."));
+        return json({ "message": "This event incremented failure counter by one." }, { status: 200 });
     };
 
     if (transaction.status === "APPROVED") {
-        await redis.incr("aproved_request").catch((_) => console.error("Counter did not increment."));
-        await redis.json.set(transaction.id, "$", transaction).catch((_) => error(400, "Unable to write in db"));
-        return json({ "message": "Aproved request was saved in database." }, { status: 200 });
+        let multi = redis.multi();
+        multi.incr("aproved_request");
+        multi.json.set(transaction.id, "$", transaction);
+        await multi.exec().catch((_) => error(400, "Unable to write in db"));
+        return json({ "message": "Approved request was saved in database." }, { status: 200 });
     };
 
     return json({ "message": "Event was not handled." }, { status: 200 });
