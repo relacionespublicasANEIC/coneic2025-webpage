@@ -19,9 +19,8 @@ async function streamToBuffer(readableStream: Readable): Promise<Buffer> {
     return Buffer.concat(chunks);
 };
 
-async function createLetterFromTemplate(templatePath: string, values: { [key: string]: string }): Promise<Buffer<ArrayBuffer>> {
+async function createLetterFromTemplate(readStream: Readable, values: { [key: string]: string }): Promise<Buffer<ArrayBuffer>> {
     try {
-        const readStream = createReadStream(templatePath);
         const credentials = new ServicePrincipalCredentials({ clientId, clientSecret });
         const pdfServices = new PDFServices({ credentials });
         const inputAsset = await pdfServices.upload({ readStream, mimeType: MimeType.DOCX });
@@ -46,14 +45,15 @@ async function createLetterFromTemplate(templatePath: string, values: { [key: st
 
 const redis = await createClient({ url: REDIS_URL }).connect();
 
-export const GET: RequestHandler = async ({ url }) => {
+export const GET: RequestHandler = async ({ url, fetch }) => {
     let name = url.searchParams.get("name");
     let university = url.searchParams.get("university");
     if (!name || !university) return error(400, "Request does not contain all the required values.");
 
     // Create the letter
-    let templatePath = path.join(process.cwd(), "static", "template.docx");
-    let letter = await createLetterFromTemplate(templatePath, { name, university }).catch((_) => error(500, "Unable to create the letter."));
+    let res = await fetch("/template.docx");
+    let templateStream = Readable.fromWeb(res.body as any);
+    let letter = await createLetterFromTemplate(templateStream, { name, university }).catch((_) => error(500, "Unable to create the letter."));
     await redis.incr("letter_requested").catch((_) => console.error("Failed to update the letter counter"));
     return new Response(letter, { headers: { 'Content-Type': "application/pdf" } });
 };
