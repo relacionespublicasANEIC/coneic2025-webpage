@@ -13,14 +13,18 @@
     }
 
     function getBadge(paymentId: string): [string, string] {
+        if (paymentId === "" || paymentId === undefined) {
+            return ["", ""];
+        }
+
         let bagde_json = badges.find((i) => i.payment === paymentId)!;
         return [bagde_json.title, bagde_json.color];
     }
 
-    let customer = data.message.trasanction.customer_data;
-    let qr_data = [data.message.hash, customer.full_name, customer.legal_id];
+    let customer = data?.message?.trasanction?.customer_data;
+    let qr_data = [data?.message?.hash, customer?.full_name, customer?.legal_id];
     let qr_url = createQr(qr_data.join("|"));
-    let bagde_info = getBadge(data.message.trasanction.payment_link_id);
+    let bagde_info = getBadge(data?.message?.trasanction?.payment_link_id);
 </script>
 
 <section class="mt-6">
@@ -33,9 +37,8 @@
                 <h2 class="text-4xl text-center">{data.message}</h2>
             </div>
             <div class="flex justify-center mt-6">
-                <a
-                    class="border-2 p-2 rounded-md border-barranquilla-yellow bg-barranquilla-yellow"
-                    href="/#carnets">Vuelve a la página inicial para intertarlo de nuevo</a>
+                <a class="border-2 p-2 rounded-md bg-barranquilla-red" href="/#carnets"
+                    >Vuelve a la página inicial para intertarlo de nuevo</a>
             </div>
         </section>
     {:else}
