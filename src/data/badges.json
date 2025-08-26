@@ -1,0 +1,56 @@
+[
+    {
+        "icon": "BadgeCircle",
+        "title": "Carnet Puerta de Oro",
+        "price": [
+            "COP$950.000",
+            "USD$300",
+            "950"
+        ],
+        "link": "puerta-oro",
+        "color": "bg-barranquilla-green",
+        "payment": "test_qbPtTR",
+        "features": [
+            "Incluye hoteles",
+            "Noche de gala",
+            "Kit de bienvenida",
+            "Asistencia a talleres",
+            "Visitas turisitcas"
+        ]
+    },
+    {
+        "icon": "BadgeSquare",
+        "title": "Carnet Curramba",
+        "price": [
+            "COP$350.000",
+            "USD$100",
+            "350"
+        ],
+        "link": "curramba",
+        "color": "bg-barranquilla-yellow",
+        "payment": "test_74hfLB",
+        "features": [
+            "Incluye hoteles",
+            "Noche de gala",
+            "Kit de bienvenida",
+            "Asistencia a talleres"
+        ]
+    },
+    {
+        "icon": "BadgeStar",
+        "title": "Carnet La Arenosa",
+        "price": [
+            "COP$150.000",
+            "USD$50",
+            "150"
+        ],
+        "link": "arenosa",
+        "color": "bg-barranquilla-red",
+        "payment": "test_cwptJ3",
+        "features": [
+            "Incluye hoteles",
+            "Noche de gala",
+            "Kit de bienvenida"
+        ]
+    }
+]
