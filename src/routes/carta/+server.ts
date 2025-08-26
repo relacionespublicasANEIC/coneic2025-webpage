@@ -52,7 +52,7 @@ export const GET: RequestHandler = async ({ url }) => {
     if (!name || !university) return error(400, "Request does not contain all the required values.");
 
     // Create the letter
-    let templatePath = path.join(process.cwd(), "static", "template.docx")
+    let templatePath = path.join(process.cwd(), "src", "routes", "carta", "template.docx");
     let letter = await createLetterFromTemplate(templatePath, { name, university }).catch((_) => error(500, "Unable to create the letter."));
     await redis.incr("letter_requested").catch((_) => console.error("Failed to update the letter counter"));
     return new Response(letter, { headers: { 'Content-Type': "application/pdf" } });
