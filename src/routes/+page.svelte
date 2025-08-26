@@ -82,8 +82,10 @@
 
 <main class="bg-linear-to-r from-barranquilla-red to-barranquilla-yellow shadow-md">
     <section class="p-8 md:px-40 md:flex items-center">
-        <h2 class="md:text-4xl text-2xl font-bold md:text-center text-white pb-8 grow">¿Necesitas una carta de invitación?</h2>
-        <form action="/carta" class="max-w-md mx-auto md:w-2/4">
+        <h2 class="md:text-4xl text-2xl font-bold md:text-center text-white pb-8 grow">
+            ¿Necesitas una carta de invitación?
+        </h2>
+        <form action="/carta" target="_blank" class="max-w-md mx-auto md:w-2/4">
             <div class="relative z-0 w-full mb-6 group">
                 <input
                     type="text"
@@ -108,6 +110,18 @@
                     class="peer-focus:font-medium absolute text-sm text-white duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
                     >Nombre de tu universidad</label>
             </div>
+            <div class="relative z-0 w-full mb-6 group">
+                <input
+                    type="email"
+                    name="email"
+                    class="block py-2 px-0 w-full text-white border-0 border-b-2 border-white appearance-none focus:outline-none focus:ring-0 peer"
+                    placeholder=" "
+                    required />
+                <label
+                    for="email"
+                    class="peer-focus:font-medium absolute text-sm text-white duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+                    >Tu correo</label>
+            </div>
             <button
                 type="submit"
                 class="text-white bg-barranquilla-blue hover:bg-blue-900 focus:ring-4 focus:outline-none focus:ring-blue-700 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center"
@@ -124,8 +138,8 @@
             <article
                 id={badge.link}
                 class="w-full flex flex-col rounded-md p-6 {badge.color} text-white shadow-md target:scale-110 target:shadow-2xl">
-                <h3 class="text-4xl text-center py-4">{badge.title}</h3>
-                <div class="relative flex">
+                <h3 class="text-4xl text-center pt-4">{badge.title}</h3>
+                <div class="relative flex py-4">
                     <span class="absolute text-xl">COP$</span>
                     <p class="text-8xl text-center grow">{badge.price[2]}</p>
                     <span class="absolute text-xl bottom-4 right-0">mil</span>
@@ -147,7 +161,7 @@
         <div>
             <p class="align-middle">Con la tecnología de</p>
         </div>
-        <div class="w-1/5">
+        <div class="w-1/3 md:w-1/5">
             <PciCompliant />
         </div>
     </div>
