@@ -11,11 +11,15 @@
         "color": "bg-barranquilla-green",
         "payment": "test_qbPtTR",
         "features": [
-            "Incluye hoteles",
-            "Noche de gala",
-            "Kit de bienvenida",
-            "Asistencia a talleres",
-            "Visitas turisitcas"
+            "Hospedaje: 5 días y 4 noches",
+            "Desayunos y almuerzos.",
+            "Cena de inauguración.",
+            "Cena de gala.",
+            "Asistencia a talleres y conferencias.",
+            "Kit de bienvenida.",
+            "Visita técnica y turística.",
+            "Transporte interno.",
+            "Certificado de asistencia."
         ]
     },
     {
@@ -30,10 +34,13 @@
         "color": "bg-barranquilla-yellow",
         "payment": "test_74hfLB",
         "features": [
-            "Incluye hoteles",
-            "Noche de gala",
-            "Kit de bienvenida",
-            "Asistencia a talleres"
+            "Almuerzo (jueves y viernes).",
+            "Cena de inauguración.",
+            "Cena de gala.",
+            "Asistencia a talleres y conferencias.",
+            "Kit de bienvenida.",
+            "Visita técnica y turística.",
+            "Certificado de asistencia."
         ]
     },
     {
@@ -48,9 +55,11 @@
         "color": "bg-barranquilla-red",
         "payment": "test_cwptJ3",
         "features": [
-            "Incluye hoteles",
-            "Noche de gala",
-            "Kit de bienvenida"
+            "Cena de inauguración.",
+            "Asistencia a talleres y conferencias.",
+            "Kit de bienvenida.",
+            "Visita técnica.",
+            "Certificado de asistencia."
         ]
     }
 ]
