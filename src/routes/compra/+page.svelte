@@ -27,6 +27,8 @@
     let bagde_info = getBadge(data?.message?.trasanction?.payment_link_id);
 </script>
 
+{JSON.stringify(data)}
+
 <section class="mt-6">
     {#if data.status !== "APPROVED"}
         <section
@@ -44,7 +46,12 @@
     {:else}
         <section class="w-full mt-12">
             <section class="print:w-3/4 w-1/4 m-auto p-8 rounded-md {bagde_info[1]} aspect-17/22">
-                <section class="bg-white rounded-md p-4 h-full flex flex-col">
+                <section class="relative bg-white rounded-md p-4 h-full flex flex-col">
+
+                    <div class="w-16 absolute right-4">
+                        <img src="coneic2025.webp" alt="">
+                    </div>
+
                     <div class="grow">
                         <div>
                             <p>Nombre</p>
