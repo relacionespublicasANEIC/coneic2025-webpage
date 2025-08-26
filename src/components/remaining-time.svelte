@@ -27,7 +27,7 @@
     {#each remainingTime as element}
         <div class="text-center">
             <p class="text-4xl">{element.quantity}</p>
-            <p class="text-xl">{element.text}</p>
+            <p class="md:text-xl">{element.text}</p>
         </div>
     {/each}
 </div>
