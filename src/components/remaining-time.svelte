@@ -1,6 +1,6 @@
 <script lang="ts">
     import { onMount } from "svelte";
-    const targetDate = new Date("2025-08-06");
+    const targetDate = new Date("2025-11-04");
     let now = $state(Date.now());
     let remainingTime = $derived.by(() => {
         const difference = Math.max(0, targetDate.getTime() - now);
@@ -27,7 +27,7 @@
     {#each remainingTime as element}
         <div class="text-center">
             <p class="text-4xl">{element.quantity}</p>
-            <p class="text-xl">{element.text}</p>
+            <p class="md:text-xl">{element.text}</p>
         </div>
     {/each}
 </div>
