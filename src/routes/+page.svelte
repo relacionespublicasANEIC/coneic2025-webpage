@@ -80,7 +80,7 @@
     </section>
 </section>
 
-<main class="bg-linear-to-r from-barranquilla-red to-barranquilla-yellow shadow-md">
+<!-- <main class="bg-linear-to-r from-barranquilla-red to-barranquilla-yellow shadow-md">
     <section class="p-8 md:px-40 md:flex items-center">
         <h2 class="md:text-4xl text-2xl font-bold md:text-center text-white pb-8 grow">
             ¿Necesitas una carta de invitación?
@@ -128,7 +128,7 @@
                 >Obtener</button>
         </form>
     </section>
-</main>
+</main> -->
 
 <section class="p-8">
     <main
@@ -152,19 +152,20 @@
                 </ul>
 
                 <button class="text-2xl mt-4 border-2 p-2 rounded-md {badge.color} cursor-pointer">
-                    <a href={"https://checkout.wompi.co/l/" + badge.payment}>Comprar</a>
+                    <!-- <a href={"https://checkout.wompi.co/l/" + badge.payment}>Comprar</a> -->
+                     <p>Estamos habilitando los pagos, vuelve pronto</p>
                 </button>
             </article>
         {/each}
     </main>
-    <div class="w-full flex alig justify-center items-center">
+    <!-- <div class="w-full flex alig justify-center items-center">
         <div>
             <p class="align-middle">Con la tecnología de</p>
         </div>
         <div class="w-1/3 md:w-1/5">
             <PciCompliant />
         </div>
-    </div>
+    </div> -->
 </section>
 
 <style>
