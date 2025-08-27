@@ -3,7 +3,6 @@ import { error } from "@sveltejs/kit";
 import { PDF_SERVICES_CLIENT_ID as clientId } from "$env/static/private";
 import { PDF_SERVICES_CLIENT_SECRET as clientSecret } from "$env/static/private";
 import { REDIS_URL } from "$env/static/private";
-import { createReadStream } from "fs";
 import { MimeType, OutputFormat } from "@adobe/pdfservices-node-sdk";
 import { ServicePrincipalCredentials, PDFServices } from "@adobe/pdfservices-node-sdk";
 import { DocumentMergeParams, DocumentMergeJob, DocumentMergeResult } from "@adobe/pdfservices-node-sdk";
@@ -19,7 +18,7 @@ async function streamToBuffer(readableStream: Readable): Promise<Buffer> {
     return Buffer.concat(chunks);
 };
 
-async function createLetterFromTemplate(readStream: Readable, values: { [key: string]: string }): Promise<Buffer<ArrayBuffer>> {
+async function createLetterFromTemplate(readStream: Readable, values: { [key: string]: string }): Promise<Readable> {
     try {
         const credentials = new ServicePrincipalCredentials({ clientId, clientSecret });
         const pdfServices = new PDFServices({ credentials });
@@ -36,8 +35,9 @@ async function createLetterFromTemplate(readStream: Readable, values: { [key: st
         // Get content from the resulting asset(s)
         const resultAsset = pdfServicesResponse!.result!.asset;
         const streamAsset = await pdfServices.getContent({ asset: resultAsset });
-        let buffer = await streamToBuffer(streamAsset.readStream as Readable);
-        return Buffer.from(buffer);
+        return Readable.from(streamAsset.readStream);
+        // let buffer = await streamToBuffer(streamAsset.readStream as Readable);
+        // return Buffer.from(buffer);
     } catch {
         throw error(500, "Unable to create the letter");
     };
@@ -55,5 +55,5 @@ export const GET: RequestHandler = async ({ url, fetch }) => {
     let templateStream = Readable.fromWeb(res.body as any);
     let letter = await createLetterFromTemplate(templateStream, { name, university }).catch((_) => error(500, "Unable to create the letter."));
     await redis.incr("letter_requested").catch((_) => console.error("Failed to update the letter counter"));
-    return new Response(letter, { headers: { 'Content-Type': "application/pdf" } });
+    return new Response(letter as any, { headers: { 'Content-Type': "application/pdf" } });
 };
