@@ -26,10 +26,10 @@
     <main class="pt-8 pb-4 md:w-1/3 mx-auto">
         <h3 class="font-light text-center">Organizadores</h3>
         <div class="flex justify-around items-center">
-            <a class="w-1/3" href="https://instagram.com/aneiccolombia">
+            <a class="w-1/3" href="https://instagram.com/aneicuninorte">
                 <img src="aneic_uninorte.svg" alt="Logo de ANEIC UniNorte" />
             </a>
-            <a class="w-1/3" href="https://instagram.com/aneicuninorte">
+            <a class="w-1/3" href="https://instagram.com/aneiccolombia">
                 <img src="aneic_colombia.svg" alt="Logo de ANEIC Colombia" />
             </a>
         </div>
