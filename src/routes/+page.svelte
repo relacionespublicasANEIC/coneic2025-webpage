@@ -142,9 +142,9 @@
                     {/each}
                 </ul>
 
-                <button class="text-2xl mt-4 border-2 p-2 rounded-md {badge.color} cursor-pointer">
-                    <a href={"https://checkout.wompi.co/l/" + badge.payment}>Comprar</a>
-                </button>
+                <a
+                    class="text-2xl mt-4 border-2 p-2 rounded-md text-center"
+                    href={"https://checkout.wompi.co/l/" + badge.payment}>Comprar</a>
             </article>
         {/each}
     </main>
