@@ -1,7 +1,6 @@
 [
     {
-        "icon": "BadgeCircle",
-        "title": "Carnet Puerta de Oro",
+        "title": "Puerta de oro",
         "price": [
             "COP$950.000",
             "USD$300",
@@ -23,8 +22,7 @@
         ]
     },
     {
-        "icon": "BadgeSquare",
-        "title": "Carnet Curramba",
+        "title": "Curramba",
         "price": [
             "COP$350.000",
             "USD$100",
@@ -44,8 +42,7 @@
         ]
     },
     {
-        "icon": "BadgeStar",
-        "title": "Carnet La Arenosa",
+        "title": "La Arenosa",
         "price": [
             "COP$150.000",
             "USD$50",
