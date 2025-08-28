@@ -143,20 +143,19 @@
                 </ul>
 
                 <button class="text-2xl mt-4 border-2 p-2 rounded-md {badge.color} cursor-pointer">
-                    <!-- <a href={"https://checkout.wompi.co/l/" + badge.payment}>Comprar</a> -->
-                    <p>Estamos habilitando los pagos, vuelve pronto</p>
+                    <a href={"https://checkout.wompi.co/l/" + badge.payment}>Comprar</a>
                 </button>
             </article>
         {/each}
     </main>
-    <!-- <div class="w-full flex alig justify-center items-center">
+    <div class="w-full flex alig justify-center items-center">
         <div>
             <p class="align-middle">Con la tecnología de</p>
         </div>
         <div class="w-1/3 md:w-1/5">
             <PciCompliant />
         </div>
-    </div> -->
+    </div>
 </section>
 
 <style>
