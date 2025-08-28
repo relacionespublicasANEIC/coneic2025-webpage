@@ -53,16 +53,7 @@ export const POST: RequestHandler = async ({ request }) => {
     //Posible values: PENDING, APPROVED, DECLINED, ERROR, VOIDED
     let transaction = body.data.transaction;
 
-    // Transaction made with a card was cancelled.
-    if (transaction.status === "VOIDED") {
-        let multi = redis.multi();
-        multi.incr("failed_requests");
-        multi.decr("aproved_request");
-        multi.json.del(transaction.id);
-        await multi.exec().catch((_) => error(400, "State could not be updated in db."));
-    };
-
-    if (transaction.status === "DECLINED" || transaction.status === "ERROR") {
+    if (transaction.status === "DECLINED" || transaction.status === "ERROR" || transaction.status === "VOIDED") {
         await redis.incr("failed_requests").catch((_) => console.error("Counter did not increment."));
         return json({ "message": "This event incremented failure counter by one." }, { status: 200 });
     };
