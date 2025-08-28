@@ -2,7 +2,7 @@ import type { RequestHandler } from "./$types";
 import { error } from "@sveltejs/kit";
 import { PDF_SERVICES_CLIENT_ID as clientId } from "$env/static/private";
 import { PDF_SERVICES_CLIENT_SECRET as clientSecret } from "$env/static/private";
-import { REDIS_URL, REDIS_DB_INDEX } from "$env/static/private";
+import { REDIS_URL, REDIS_DB_PREFIX as pre } from "$env/static/private";
 import { MimeType, OutputFormat } from "@adobe/pdfservices-node-sdk";
 import { ServicePrincipalCredentials, PDFServices } from "@adobe/pdfservices-node-sdk";
 import { DocumentMergeParams, DocumentMergeJob, DocumentMergeResult } from "@adobe/pdfservices-node-sdk";
@@ -43,7 +43,7 @@ async function createLetterFromTemplate(readStream: Readable, values: { [key: st
     };
 };
 
-const redis = await createClient({ url: REDIS_URL, database: parseInt(REDIS_DB_INDEX || "0") }).connect();
+const redis = await createClient({ url: REDIS_URL }).connect();
 
 export const GET: RequestHandler = async ({ url, fetch }) => {
     let name = url.searchParams.get("name");
@@ -54,6 +54,6 @@ export const GET: RequestHandler = async ({ url, fetch }) => {
     let res = await fetch("/template.docx");
     let templateStream = Readable.fromWeb(res.body as any);
     let letter = await createLetterFromTemplate(templateStream, { name, university }).catch((_) => error(500, "Unable to create the letter."));
-    await redis.incr("letter_requested").catch((_) => console.error("Failed to update the letter counter"));
+    await redis.incr(pre + "letter_requested").catch((_) => console.error("Failed to update the letter counter"));
     return new Response(letter as any, { headers: { 'Content-Type': "application/pdf" } });
 };
