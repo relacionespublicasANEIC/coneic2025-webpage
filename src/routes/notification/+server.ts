@@ -69,7 +69,7 @@ export const POST: RequestHandler = async ({ request }) => {
         // Send confirmation email to user.
         let userData = { full_name: transaction.customer_data.full_name, email: transaction.customer_email };
         let transactionData = { payment_link_id: transaction.payment_link_id, id: transaction.id };
-        Promise.all([
+        await Promise.all([
             sendEmail(userData, transactionData),
             redis.lPush(pre + "emailed_id_list", transaction.id)
         ]).catch((_) => error(500, "Unable to send email."));
