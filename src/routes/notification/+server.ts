@@ -64,7 +64,7 @@ export const POST: RequestHandler = async ({ request }) => {
         multi.incr("aproved_request");
         multi.json.set(transaction.id, "$", transaction);
         multi.lPush("approved_id_list", transaction.id);
-        await multi.exec().catch((_) => error(400, "Unable to write in db"));
+        await multi.exec().catch((_) => error(500, "Unable to write in db"));
 
         // Send confirmation email to user.
         let userData = { full_name: transaction.customer_data.full_name, email: transaction.customer_email };
