@@ -126,7 +126,10 @@
             <article
                 id={badge.link}
                 class="w-full flex flex-col rounded-md p-6 {badge.color} text-white shadow-md target:scale-110 target:shadow-2xl">
-                <h3 class="text-4xl text-center pt-4">{badge.title}</h3>
+                <div class="text-center">
+                    <h3 class="text-2xl">Carnet</h3>
+                    <h3 class="text-4xl">{badge.title}</h3>
+                </div>
                 <div class="relative flex py-4">
                     <span class="absolute text-xl">COP$</span>
                     <p class="text-8xl text-center grow">{badge.price[2]}</p>
