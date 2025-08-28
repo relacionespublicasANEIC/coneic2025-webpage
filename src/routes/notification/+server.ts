@@ -68,13 +68,20 @@ export const POST: RequestHandler = async ({ request }) => {
     };
 
     if (transaction.status === "APPROVED") {
+        // Save data from notification to db.
         let multi = redis.multi();
         multi.incr("aproved_request");
         multi.json.set(transaction.id, "$", transaction);
+        multi.lPush("approved_id_list", transaction.id);
         await multi.exec().catch((_) => error(400, "Unable to write in db"));
+
+        // Send confirmation email to user.
         let userData = { full_name: transaction.customer_data.full_name, email: transaction.customer_email };
         let transactionData = { payment_link_id: transaction.payment_link_id, id: transaction.id };
-        await sendEmail(userData, transactionData).catch((_) => error(500, "Unable to send email."));
+        Promise.all([
+            sendEmail(userData, transactionData),
+            redis.lPush("emailed_id_list", transaction.id)
+        ]).catch((_) => error(500, "Unable to send email."));
         return json({ "message": "Approved request was saved in database." }, { status: 200 });
     };
 
