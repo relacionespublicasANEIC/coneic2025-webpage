@@ -9,13 +9,13 @@ import mailTemplate from "./mail.html?raw";
 
 const redis = await createClient({ url: REDIS_URL, database: parseInt(REDIS_DB_INDEX || "0") }).connect();
 
-async function sendEmail(userData: { legal_id: string, full_name: string, email: string }, payment_link_id: string) {
-    let carnet = badges.find(i => i.payment === payment_link_id)?.title;
+async function sendEmail(userData: { full_name: string, email: string }, transactionData: { payment_link_id: string, id: string }) {
+    let carnet = badges.find(i => i.payment === transactionData.payment_link_id)?.title;
     if (!carnet) throw "Payment link does not match any carnet"
 
     let html = mailTemplate
         .replace("{{name}}", userData.full_name)
-        .replace("{{id}}", userData.legal_id)
+        .replace("{{id}}", transactionData.id)
         .replace("{{carnet}}", carnet);
 
     const transporter = nodemailer.createTransport({
@@ -72,7 +72,9 @@ export const POST: RequestHandler = async ({ request }) => {
         multi.incr("aproved_request");
         multi.json.set(transaction.id, "$", transaction);
         await multi.exec().catch((_) => error(400, "Unable to write in db"));
-        await sendEmail({ ...transaction.customer_data, email: transaction.customer_email }, transaction.payment_link_id).catch((_) => error(500, "Unable to send email."))
+        let userData = { full_name: transaction.customer_data.full_name, email: transaction.customer_email };
+        let transactionData = { payment_link_id: transaction.payment_link_id, id: transaction.id };
+        await sendEmail(userData, transactionData).catch((_) => error(500, "Unable to send email."));
         return json({ "message": "Approved request was saved in database." }, { status: 200 });
     };
 
