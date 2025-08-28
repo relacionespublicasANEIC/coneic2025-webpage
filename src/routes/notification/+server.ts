@@ -1,9 +1,39 @@
 import { createClient } from "redis";
-import { REDIS_URL } from "$env/static/private";
+import { REDIS_URL, REDIS_DB_INDEX } from "$env/static/private";
+import { GOOGLE_ANEICCOLOMBIA_PASSWORD } from "$env/static/private";
 import { error, json } from "@sveltejs/kit";
 import type { RequestHandler } from "./$types";
+import badges from "../../data/badges.json";
+import nodemailer from "nodemailer";
+import mailTemplate from "./mail.html?raw";
 
-const redis = await createClient({ url: REDIS_URL }).connect();
+const redis = await createClient({ url: REDIS_URL, database: parseInt(REDIS_DB_INDEX || "0") }).connect();
+
+async function sendEmail(userData: { legal_id: string, full_name: string, email: string }, payment_link_id: string) {
+    let carnet = badges.find(i => i.payment === payment_link_id)?.title;
+    if (!carnet) throw "Payment link does not match any carnet"
+
+    let html = mailTemplate
+        .replace("{{name}}", userData.full_name)
+        .replace("{{id}}", userData.legal_id)
+        .replace("{{carnet}}", carnet);
+
+    const transporter = nodemailer.createTransport({
+        host: "smtp.gmail.com", port: 465, secure: true,
+        auth: {
+            user: "aneic.colombia@gmail.com",
+            pass: GOOGLE_ANEICCOLOMBIA_PASSWORD
+        }
+    });
+
+    await transporter.sendMail({
+        from: { name: "Comité organizador CONEIC 2025", address: "aneic.colombia@gmail.com" },
+        to: userData.email,
+        subject: "Confirmación de su participación en el CONEIC 2025", html, attachDataUrls: true
+    });
+
+    return true;
+};
 
 // Defines a handler for events from wompi.
 // https://docs.wompi.co/docs/colombia/eventos/
@@ -42,8 +72,9 @@ export const POST: RequestHandler = async ({ request }) => {
         multi.incr("aproved_request");
         multi.json.set(transaction.id, "$", transaction);
         await multi.exec().catch((_) => error(400, "Unable to write in db"));
+        await sendEmail({ ...transaction.customer_data, email: transaction.customer_email }, transaction.payment_link_id).catch((_) => error(500, "Unable to send email."))
         return json({ "message": "Approved request was saved in database." }, { status: 200 });
     };
 
     return json({ "message": "Event was not handled." }, { status: 200 });
-}
+};
