@@ -2,7 +2,7 @@ import type { RequestHandler } from "./$types";
 import { error } from "@sveltejs/kit";
 import { PDF_SERVICES_CLIENT_ID as clientId } from "$env/static/private";
 import { PDF_SERVICES_CLIENT_SECRET as clientSecret } from "$env/static/private";
-import { REDIS_URL } from "$env/static/private";
+import { REDIS_URL, REDIS_DB_INDEX } from "$env/static/private";
 import { MimeType, OutputFormat } from "@adobe/pdfservices-node-sdk";
 import { ServicePrincipalCredentials, PDFServices } from "@adobe/pdfservices-node-sdk";
 import { DocumentMergeParams, DocumentMergeJob, DocumentMergeResult } from "@adobe/pdfservices-node-sdk";
@@ -43,7 +43,7 @@ async function createLetterFromTemplate(readStream: Readable, values: { [key: st
     };
 };
 
-const redis = await createClient({ url: REDIS_URL }).connect();
+const redis = await createClient({ url: REDIS_URL, database: parseInt(REDIS_DB_INDEX || "0") }).connect();
 
 export const GET: RequestHandler = async ({ url, fetch }) => {
     let name = url.searchParams.get("name");
