@@ -3,7 +3,7 @@
     import RemainingTime from "../components/remaining-time.svelte";
     import ImageCard from "../components/image-card.svelte";
     import TypingText from "../components/typing-text.svelte";
-    import BrandInstagram from "../components/brand-instagram.svelte";
+    import BrandInstagram from "../icons/brand-instagram.svelte";
     import PciCompliant from "../icons/pci-compliant.svelte";
     import images from "../data/images.json";
     import badges from "../data/badges.json";
