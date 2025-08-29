@@ -7,8 +7,8 @@ import badges from "../../data/badges.json";
 import nodemailer from "nodemailer";
 import mailTemplate from "./mail.html?raw";
 
-async function sendEmail(userData: { full_name: string, email: string }, transactionData: { payment_link_id: string, id: string }) {
-    let carnet = badges.find(i => i.payment === transactionData.payment_link_id)?.title;
+async function sendEmail(userData: { full_name: string, email: string }, transactionData: { carnet_id: string, id: string }) {
+    let carnet = badges.find(i => i.link === transactionData.carnet_id)?.title;
     if (!carnet) throw "Payment link does not match any carnet"
 
     let html = mailTemplate
@@ -67,9 +67,15 @@ export const POST: RequestHandler = async ({ request }) => {
         multi.lPush(pre + "aproved-transactions-list", transaction.id);
         await multi.exec().catch((_) => error(500, "Unable to write in db"));
 
+        // Retrieve previous info to send email
+        // TODO: Change this because we are querying to db only for a single field.
+        let prevData = await redis.hGet(pre + "custom-data-list", transaction.reference).catch((_) => error(500, "Previous information does not exist."));
+        if (!prevData) return error(500, "Previous information does not exist.");
+        let prevDataLive = JSON.parse(prevData);
+
         // Send confirmation email to user.
         let userData = { full_name: transaction.customer_data.full_name, email: transaction.customer_email };
-        let transactionData = { payment_link_id: transaction.payment_link_id, id: transaction.id };
+        let transactionData = { carnet_id: prevDataLive.carnet.id, id: transaction.id };
         await Promise.all([
             sendEmail(userData, transactionData),
             redis.lPush(pre + "emailed-id-list", transaction.id)
