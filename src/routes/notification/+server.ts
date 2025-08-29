@@ -7,8 +7,6 @@ import badges from "../../data/badges.json";
 import nodemailer from "nodemailer";
 import mailTemplate from "./mail.html?raw";
 
-const redis = await createClient({ url: REDIS_URL }).connect();
-
 async function sendEmail(userData: { full_name: string, email: string }, transactionData: { payment_link_id: string, id: string }) {
     let carnet = badges.find(i => i.payment === transactionData.payment_link_id)?.title;
     if (!carnet) throw "Payment link does not match any carnet"
@@ -50,20 +48,23 @@ export const POST: RequestHandler = async ({ request }) => {
         return json({ "message": "Skipped event." }, { status: 200 });
     };
 
+    const redis = await createClient({ url: REDIS_URL }).connect().catch((_) => error(500, "Unable to connect to db."));
+
     //Posible values: PENDING, APPROVED, DECLINED, ERROR, VOIDED
     let transaction = body.data.transaction;
 
     if (transaction.status === "DECLINED" || transaction.status === "ERROR" || transaction.status === "VOIDED") {
-        await redis.incr(pre + "failed_requests").catch((_) => console.error("Counter did not increment."));
+        await redis.incr(pre + "failed-requests").catch((_) => console.error("Counter did not increment."));
+        await redis.hDel(pre + "custom-data-list", transaction.reference).catch((_) => console.error("Info could not be removed"));
         return json({ "message": "This event incremented failure counter by one." }, { status: 200 });
     };
 
     if (transaction.status === "APPROVED") {
         // Save data from notification to db.
         let multi = redis.multi();
-        multi.incr(pre + "aproved_request");
-        multi.json.set(pre + transaction.id, "$", transaction);
-        multi.lPush(pre + "approved_id_list", transaction.id);
+        multi.incr(pre + "aproved-requests");
+        multi.hSet(pre + "transaction-data-list", transaction.id, JSON.stringify(transaction))
+        multi.lPush(pre + "aproved-transactions-list", transaction.id);
         await multi.exec().catch((_) => error(500, "Unable to write in db"));
 
         // Send confirmation email to user.
@@ -71,7 +72,7 @@ export const POST: RequestHandler = async ({ request }) => {
         let transactionData = { payment_link_id: transaction.payment_link_id, id: transaction.id };
         await Promise.all([
             sendEmail(userData, transactionData),
-            redis.lPush(pre + "emailed_id_list", transaction.id)
+            redis.lPush(pre + "emailed-id-list", transaction.id)
         ]).catch((_) => error(500, "Unable to send email."));
         return json({ "message": "Approved request was saved in database." }, { status: 200 });
     };
