@@ -5,8 +5,12 @@
     import TypingText from "../components/typing-text.svelte";
     import BrandInstagram from "../icons/brand-instagram.svelte";
     import PciCompliant from "../icons/pci-compliant.svelte";
+    import MetadataDialog from "../components/metadata-dialog.svelte";
     import images from "../data/images.json";
     import badges from "../data/badges.json";
+
+    let dialogReference: MetadataDialog;
+    let currCarnetId = $state("");
 </script>
 
 <section class="p-8">
@@ -142,9 +146,14 @@
                     {/each}
                 </ul>
 
-                <a
-                    class="text-2xl mt-4 border-2 p-2 rounded-md text-center"
-                    href={"https://checkout.wompi.co/l/" + badge.payment}>Comprar</a>
+                <button
+                    class="text-2xl mt-4 border-2 p-2 rounded-md text-center cursor-pointer"
+                    onclick={() => {
+                        currCarnetId = badge.link;
+                        dialogReference.toggle();
+                    }}>
+                    Comprar
+                </button>
             </article>
         {/each}
     </main>
@@ -157,6 +166,8 @@
         </div>
     </div>
 </section>
+
+<MetadataDialog carnet_id={currCarnetId} bind:this={dialogReference} />
 
 <style>
     .instagram-button {
