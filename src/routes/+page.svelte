@@ -3,10 +3,14 @@
     import RemainingTime from "../components/remaining-time.svelte";
     import ImageCard from "../components/image-card.svelte";
     import TypingText from "../components/typing-text.svelte";
-    import BrandInstagram from "../components/brand-instagram.svelte";
+    import BrandInstagram from "../icons/brand-instagram.svelte";
     import PciCompliant from "../icons/pci-compliant.svelte";
+    import MetadataDialog from "../components/metadata-dialog.svelte";
     import images from "../data/images.json";
     import badges from "../data/badges.json";
+
+    let dialogReference: MetadataDialog;
+    let currCarnetId = $state("");
 </script>
 
 <section class="p-8">
@@ -126,7 +130,10 @@
             <article
                 id={badge.link}
                 class="w-full flex flex-col rounded-md p-6 {badge.color} text-white shadow-md target:scale-110 target:shadow-2xl">
-                <h3 class="text-4xl text-center pt-4">{badge.title}</h3>
+                <div class="text-center">
+                    <h3 class="text-2xl">Carnet</h3>
+                    <h3 class="text-4xl">{badge.title}</h3>
+                </div>
                 <div class="relative flex py-4">
                     <span class="absolute text-xl">COP$</span>
                     <p class="text-8xl text-center grow">{badge.price[2]}</p>
@@ -139,22 +146,28 @@
                     {/each}
                 </ul>
 
-                <button class="text-2xl mt-4 border-2 p-2 rounded-md {badge.color} cursor-pointer">
-                    <!-- <a href={"https://checkout.wompi.co/l/" + badge.payment}>Comprar</a> -->
-                    <p>Estamos habilitando los pagos, vuelve pronto</p>
+                <button
+                    class="text-2xl mt-4 border-2 p-2 rounded-md text-center cursor-pointer"
+                    onclick={() => {
+                        currCarnetId = badge.link;
+                        dialogReference.toggle();
+                    }}>
+                    Comprar
                 </button>
             </article>
         {/each}
     </main>
-    <!-- <div class="w-full flex alig justify-center items-center">
+    <div class="w-full flex alig justify-center items-center">
         <div>
             <p class="align-middle">Con la tecnología de</p>
         </div>
         <div class="w-1/3 md:w-1/5">
             <PciCompliant />
         </div>
-    </div> -->
+    </div>
 </section>
+
+<MetadataDialog carnet_id={currCarnetId} bind:this={dialogReference} />
 
 <style>
     .instagram-button {
