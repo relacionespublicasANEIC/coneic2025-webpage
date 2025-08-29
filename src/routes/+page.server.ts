@@ -64,8 +64,8 @@ export const actions = {
             health: { sex, blood: { abo: blood_type, rh_factor }, feeding, health },
             carnet: { id: carnet_id, price: carnetInfo.price_in_cents }
         };
-        // const redis = await createClient({ url: REDIS_URL }).connect();
-        // await redis.hSet(pre + "custom-data-list", reference, JSON.stringify(metadata)).catch((_) => fail(500, { message: "Unable to write into db." }));
+        const redis = await createClient({ url: REDIS_URL }).connect();
+        await redis.hSet(pre + "custom-data-list", reference, JSON.stringify(metadata)).catch((_) => fail(500, { message: "Unable to write into db." }));
         return redirect(303, requestUrl);
     }
 };
