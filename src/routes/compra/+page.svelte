@@ -2,7 +2,6 @@
     import "../../styles.css";
     import type { PageProps } from "./$types";
     import Bill from "../../icons/bill.svelte";
-    import badges from "../../data/badges.json";
 
     let { data }: PageProps = $props();
 
@@ -48,11 +47,8 @@
         {#if data.status === "APPROVED"}
             <p>Identificador de compra</p>
             <p class="text-xl">{data.id}</p>
-
-            <p>Carnet</p>
-            <p class="text-xl">
-                {badges.find((i) => i.payment === data.payment_link_id)?.title}
-            </p>
+            <br />
+            <p class="text-xs">Guarda este identificador de pago en un lugar seguro.</p>
         {/if}
     </section>
 </section>
