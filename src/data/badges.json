@@ -6,9 +6,9 @@
             "USD$300",
             "950"
         ],
+        "price_in_cents": "95000000",
         "link": "puerta-oro",
         "color": "bg-barranquilla-green",
-        "payment": "test_qbPtTR",
         "features": [
             "Hospedaje: 5 días y 4 noches",
             "Desayunos y almuerzos.",
@@ -28,9 +28,9 @@
             "USD$100",
             "350"
         ],
+        "price_in_cents": "35000000",
         "link": "curramba",
         "color": "bg-barranquilla-yellow",
-        "payment": "test_74hfLB",
         "features": [
             "Almuerzo (jueves y viernes).",
             "Cena de inauguración.",
@@ -48,9 +48,9 @@
             "USD$50",
             "150"
         ],
+        "price_in_cents": "15000000",
         "link": "arenosa",
         "color": "bg-barranquilla-red",
-        "payment": "test_cwptJ3",
         "features": [
             "Cena de inauguración.",
             "Asistencia a talleres y conferencias.",
