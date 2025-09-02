@@ -4,8 +4,8 @@ import { error, json } from "@sveltejs/kit";
 import type { RequestHandler } from "./$types";
 import sendEmail from "$lib/server/sendEmail";
 
-// https://development.coneic.aneiccolombia.com/paypal	2TV3748022168523X
 // Defines a handler for events from paypal.
+// https://development.coneic.aneiccolombia.com/paypal	2TV3748022168523X
 export const POST: RequestHandler = async ({ request }) => {
     let body = await request.json().catch(() => error(400, "Body is void or not json."));
 
@@ -18,17 +18,18 @@ export const POST: RequestHandler = async ({ request }) => {
     const redis = await createClient({ url: REDIS_URL }).connect().catch((_) => error(500, "Unable to connect to db."));
     const transaction = body.resource;
 
-    if (body.event_type === "PAYMENT.CAPTURE.PENDING") {
+    if (body.event_type === "CHECKOUT.ORDER.APPROVED") {
+        console.log("chek")
         return json({ message: "Server knows that transaction is pending." }, { status: 200 });
     };
 
-    if (body.event_type === "PAYMENT.CAPTURE.DECLINED") {
+    if (body.event_type === "CHECKOUT.ORDER.DECLINED") {
         await redis.incr(pre + "failed-requests").catch((_) => console.error("Counter did not increment."));
         await redis.hDel(pre + "custom-data-list", transaction.invoice_id).catch((_) => console.error("Info could not be removed"));
         return json({ "message": "This event incremented failure counter by one." }, { status: 200 });
     };
 
-    if (body.event_type === "PAYMENT.CAPTURE.COMPLETED") {
+    if (body.event_type === "CHECKOUT.ORDER.COMPLETED") {
         // Save data from notification to db.
         let multi = redis.multi();
         multi.incr(pre + "aproved-requests");
@@ -53,3 +54,8 @@ export const POST: RequestHandler = async ({ request }) => {
 
     return error(400, "Body json has a invalid shape.");
 };
+
+// Checkout order approved, Checkout order completed, Checkout order declined
+// CHECKOUT.ORDER.APPROVED
+// CHECKOUT.ORDER.DECLINED
+// CHECKOUT.ORDER.COMPLETED
