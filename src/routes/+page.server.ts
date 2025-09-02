@@ -76,14 +76,12 @@ export const actions = {
             const order = await orderController.createOrder({
                 body: {
                     intent: paypal.CheckoutPaymentIntent.Capture,
+                    payer: { emailAddress: email },
                     purchaseUnits: [{
-                        referenceId: reference,
-                        amount: { currencyCode: "USD", value: carnetInfo.price_in_usd }
-                    }],
-                    applicationContext: {
-                        returnUrl: `${PUBLIC_PAGE_URL}/compra`,
-                        cancelUrl: `${PUBLIC_PAGE_URL}/compra`
-                    }
+                        invoiceId: reference,
+                        amount: { currencyCode: "USD", value: carnetInfo.price_in_usd },
+                        description: `Compra del carnet ${carnetInfo.title}`,
+                    }]
                 }
             });
 
