@@ -7,6 +7,7 @@
     import badges from "../data/badges.json";
     let { carnet_id }: { carnet_id: string } = $props();
     let badge = $derived(badges.find((i) => i.link === carnet_id)!);
+    let isColombian = $state(true);
     let node: HTMLDialogElement;
     export const toggle = () => (node.open ? node.close() : node.showModal());
 </script>
@@ -105,6 +106,24 @@
                         for="whatsapp"
                         class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
                         >¿Te podemos contactar por WhatsApp a través de ese número?</label>
+                </div>
+                <div class="flex flex-col mb-4">
+                    <div class="flex items-center">
+                        <input
+                            name="colombian"
+                            type="checkbox"
+                            bind:checked={isColombian}
+                            class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
+                        <label
+                            for="whatsapp"
+                            class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+                            >¿Es usted colombiano?</label>
+                    </div>
+                    {#if !isColombian}
+                        <p class="grow-1 text-xs">
+                            Los pagos para extranjeros se harán a través de PayPal.
+                        </p>
+                    {/if}
                 </div>
             </fieldset>
 
@@ -288,10 +307,12 @@
                 </div>
             </fieldset>
 
-            <p class="hidden">Te redirigermos a la página del gestor de pagos.</p>
-            <button class="bg-blue-600 text-white p-2 rounded-md" type="submit">Enviar</button>
-            <button class="bg-red-600 text-white p-2 rounded-md" onclick={() => node.close()}
-                >Cancelar</button>
+            <button class="bg-blue-600 text-white p-2 rounded-md" type="submit">
+                Ir a {isColombian ? "Wompi" : "PayPal"}
+            </button>
+            <button class="bg-red-600 text-white p-2 rounded-md" onclick={() => node.close()}>
+                Cancelar
+            </button>
         </form>
     </section>
 </dialog>
