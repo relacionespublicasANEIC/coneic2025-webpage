@@ -33,27 +33,27 @@ export const POST: RequestHandler = async ({ request }) => {
     const transaction = body.resource;
     const redis = await createClient({ url: REDIS_URL }).connect().catch((_) => error(500, "Unable to connect to db."));
     if (body.event_type === "CHECKOUT.ORDER.APPROVED") {
-        console.log(`Order ${transaction.id} has been approved.`);
+        console.log(`Order ${transaction.invoice_id} has been approved.`);
         console.log("Starting capture process.");
-        await capturePayment(transaction.id).catch((_) => error(500, "Unable to start capture of payment."));
+        capturePayment(transaction.id).catch((_) => error(500, "Unable to start capture of payment."));
         return json({ message: "Order capture was started." }, { status: 200 });
     };
 
     if (body.event_type === "PAYMENT.CAPTURE.DECLINED") {
-        console.log(`Capturing order ${transaction.id} has failed.`);
+        console.log(`Capturing order ${transaction.invoice_id} has failed.`);
         await redis.incr(pre + "failed-requests").catch((_) => console.error("Counter did not increment."));
         await redis.hDel(pre + "custom-data-list", transaction.invoice_id).catch((_) => console.error("Info could not be removed"));
         return json({ "message": "This event incremented failure counter by one." }, { status: 200 });
     };
 
     if (body.event_type === "PAYMENT.CAPTURE.COMPLETED") {
-        console.log(`Capturing order ${transaction.id} has succeded.`);
+        console.log(`Capturing order ${transaction.invoice_id} has succeded.`);
 
         // Save data from notification to db.
         let multi = redis.multi();
         multi.incr(pre + "aproved-requests");
-        multi.hSet(pre + "transaction-data-list", transaction.id, JSON.stringify(transaction))
-        multi.lPush(pre + "aproved-transactions-list", transaction.id);
+        multi.hSet(pre + "transaction-data-list", transaction.invoice_id, JSON.stringify(transaction))
+        multi.lPush(pre + "aproved-transactions-list", transaction.invoice_id);
         await multi.exec().catch((_) => error(500, "Unable to write in db"));
 
         // Retrieve previous info to send email.
@@ -68,7 +68,7 @@ export const POST: RequestHandler = async ({ request }) => {
         // let transactionData
         await Promise.all([
             // sendEmail({ userData, transactionData }),
-            redis.lPush(pre + "emailed-id-list", transaction.id)
+            redis.lPush(pre + "emailed-id-list", transaction.invoice_id)
         ]).catch((_) => error(500, "Unable to send email."));
         return json({ "message": "Approved request was saved in database." }, { status: 200 });
     };
