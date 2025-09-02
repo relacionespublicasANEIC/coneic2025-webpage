@@ -57,23 +57,19 @@ export const POST: RequestHandler = async ({ request }) => {
         await multi.exec().catch((_) => error(500, "Unable to write in db"));
 
         // Retrieve previous info to send email.
-        // let prevData = await redis.hGet(pre + "custom-data-list", transaction.invoice_id).catch((_) => error(500, "Previous information does not exist."));
-        // if (!prevData) return error(500, "Previous information does not exist.");
-        // let prevDataLive = JSON.parse(prevData);
+        let prevData = await redis.hGet(pre + "custom-data-list", transaction.invoice_id).catch((_) => error(500, "Previous information does not exist."));
+        if (!prevData) return error(500, "Previous information does not exist.");
+        let prevDataLive = JSON.parse(prevData);
 
         // Send confirmation email to user.
-        // let userData = prevDataLive.user;
-        // let userData = {full_name: "test4", email: }
-        // let transactionData = { carnet_id: prevDataLive.carnet.id, id: transaction.id };
-        // let transactionData
+        let userData = prevDataLive.user;
+        let transactionData = { carnet_id: prevDataLive.carnet.id, id: transaction.invoice_id };
         await Promise.all([
-            // sendEmail({ userData, transactionData }),
+            sendEmail({ userData, transactionData }),
             redis.lPush(pre + "emailed-id-list", transaction.invoice_id)
         ]).catch((_) => error(500, "Unable to send email."));
         return json({ "message": "Approved request was saved in database." }, { status: 200 });
     };
-
-
 
     return error(400, "Body json has a invalid shape.");
 };
