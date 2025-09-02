@@ -31,7 +31,7 @@ export const POST: RequestHandler = async ({ request }) => {
         });
 
         const orderController = new paypal.OrdersController(client);
-        await orderController.captureOrder({ id: body.id }).catch((_) => error(500, "Unable to capture this order."));
+        await orderController.captureOrder({ id: body.resource.id }).catch((_) => error(500, "Unable to capture this order."));
         return json({ message: "Order capture was started." }, { status: 200 });
     };
 
