@@ -1,8 +1,10 @@
 import { createClient } from "redis";
 import { REDIS_URL, REDIS_DB_PREFIX as pre } from "$env/static/private";
+import { PAYPAL_MODE, PAYPAL_CLIENT_ID, PAYPAL_SECRET } from "$env/static/private";
 import { error, json } from "@sveltejs/kit";
 import type { RequestHandler } from "./$types";
 import sendEmail from "$lib/server/sendEmail";
+import paypal from "@paypal/paypal-server-sdk";
 
 // Defines a handler for events from paypal.
 // https://development.coneic.aneiccolombia.com/paypal	2TV3748022168523X
@@ -14,15 +16,26 @@ export const POST: RequestHandler = async ({ request }) => {
         return error(400, "Body json has a invalid shape.");
     };
 
-    // Handle the WompiEvent.
+    // Handle the PayPal event.
     const redis = await createClient({ url: REDIS_URL }).connect().catch((_) => error(500, "Unable to connect to db."));
-    const transaction = body.resource;
 
     if (body.event_type === "CHECKOUT.ORDER.APPROVED") {
-        console.log("chek")
-        return json({ message: "Server knows that transaction is pending." }, { status: 200 });
+        console.log(`Order ${body.id} has been approved. Capturing.`);
+
+        const client = new paypal.Client({
+            environment: (PAYPAL_MODE === "production") ? paypal.Environment.Production : paypal.Environment.Sandbox,
+            clientCredentialsAuthCredentials: {
+                oAuthClientId: PAYPAL_CLIENT_ID,
+                oAuthClientSecret: PAYPAL_SECRET
+            }
+        });
+
+        const orderController = new paypal.OrdersController(client);
+        await orderController.captureOrder({ id: body.id }).catch((_) => error(500, "Unable to capture this order."));
+        return json({ message: "Order capture was started." }, { status: 200 });
     };
 
+    const transaction = body.resource;
     if (body.event_type === "CHECKOUT.ORDER.DECLINED") {
         await redis.incr(pre + "failed-requests").catch((_) => console.error("Counter did not increment."));
         await redis.hDel(pre + "custom-data-list", transaction.invoice_id).catch((_) => console.error("Info could not be removed"));
