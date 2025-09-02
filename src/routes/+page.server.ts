@@ -80,7 +80,13 @@ export const actions = {
                         invoiceId: reference,
                         amount: { currencyCode: "USD", value: carnetInfo.price_in_usd },
                         description: `Compra del carnet ${carnetInfo.title}`,
-                    }]
+                    }],
+                    applicationContext: {
+                        brandName: "ANEIC Colombia",
+                        shippingPreference: paypal.OrderApplicationContextShippingPreference.NoShipping,
+                        returnUrl: `${PUBLIC_PAGE_URL}/compra`,
+                        cancelUrl: `${PUBLIC_PAGE_URL}/compra`
+                    }
                 }
             });
 
