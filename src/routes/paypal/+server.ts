@@ -35,7 +35,7 @@ export const POST: RequestHandler = async ({ request }) => {
     if (body.event_type === "CHECKOUT.ORDER.APPROVED") {
         console.log(`Order ${transaction.invoice_id} has been approved.`);
         console.log("Starting capture process.");
-        capturePayment(transaction.id).catch((_) => error(500, "Unable to start capture of payment."));
+        await capturePayment(transaction.id).catch((_) => error(500, "Unable to start capture of payment."));
         return json({ message: "Order capture was started." }, { status: 200 });
     };
 
