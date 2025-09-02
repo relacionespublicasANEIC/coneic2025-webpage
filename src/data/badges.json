@@ -7,6 +7,7 @@
             "950"
         ],
         "price_in_cents": "95000000",
+        "price_in_usd": "250",
         "link": "puerta-oro",
         "color": "bg-barranquilla-green",
         "features": [
@@ -29,6 +30,7 @@
             "350"
         ],
         "price_in_cents": "35000000",
+        "price_in_usd": "100",
         "link": "curramba",
         "color": "bg-barranquilla-yellow",
         "features": [
@@ -49,6 +51,7 @@
             "150"
         ],
         "price_in_cents": "15000000",
+        "price_in_usd": "50",
         "link": "arenosa",
         "color": "bg-barranquilla-red",
         "features": [
