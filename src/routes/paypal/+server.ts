@@ -21,17 +21,6 @@ export const POST: RequestHandler = async ({ request }) => {
 
     if (body.event_type === "CHECKOUT.ORDER.APPROVED") {
         console.log(`Order ${body.id} has been approved. Capturing.`);
-
-        const client = new paypal.Client({
-            environment: (PAYPAL_MODE === "production") ? paypal.Environment.Production : paypal.Environment.Sandbox,
-            clientCredentialsAuthCredentials: {
-                oAuthClientId: PAYPAL_CLIENT_ID,
-                oAuthClientSecret: PAYPAL_SECRET
-            }
-        });
-
-        const orderController = new paypal.OrdersController(client);
-        await orderController.captureOrder({ id: body.resource.id }).catch((_) => error(500, "Unable to capture this order."));
         return json({ message: "Order capture was started." }, { status: 200 });
     };
 
