@@ -35,35 +35,35 @@ export const POST: RequestHandler = async ({ request }) => {
         return json({ message: "Order capture was started." }, { status: 200 });
     };
 
-    const transaction = body.resource;
-    if (body.event_type === "CHECKOUT.ORDER.DECLINED") {
-        await redis.incr(pre + "failed-requests").catch((_) => console.error("Counter did not increment."));
-        await redis.hDel(pre + "custom-data-list", transaction.invoice_id).catch((_) => console.error("Info could not be removed"));
-        return json({ "message": "This event incremented failure counter by one." }, { status: 200 });
-    };
+    // const transaction = body.resource;
+    // if (body.event_type === "CHECKOUT.ORDER.DECLINED") {
+    //     await redis.incr(pre + "failed-requests").catch((_) => console.error("Counter did not increment."));
+    //     await redis.hDel(pre + "custom-data-list", transaction.invoice_id).catch((_) => console.error("Info could not be removed"));
+    //     return json({ "message": "This event incremented failure counter by one." }, { status: 200 });
+    // };
 
-    if (body.event_type === "CHECKOUT.ORDER.COMPLETED") {
-        // Save data from notification to db.
-        let multi = redis.multi();
-        multi.incr(pre + "aproved-requests");
-        multi.hSet(pre + "transaction-data-list", transaction.id, JSON.stringify(transaction))
-        multi.lPush(pre + "aproved-transactions-list", transaction.id);
-        await multi.exec().catch((_) => error(500, "Unable to write in db"));
+    // if (body.event_type === "CHECKOUT.ORDER.COMPLETED") {
+    //     // Save data from notification to db.
+    //     let multi = redis.multi();
+    //     multi.incr(pre + "aproved-requests");
+    //     multi.hSet(pre + "transaction-data-list", transaction.id, JSON.stringify(transaction))
+    //     multi.lPush(pre + "aproved-transactions-list", transaction.id);
+    //     await multi.exec().catch((_) => error(500, "Unable to write in db"));
 
-        // Retrieve previous info to send email.
-        // let prevData = await redis.hGet(pre + "custom-data-list", transaction.invoice_id).catch((_) => error(500, "Previous information does not exist."));
-        // if (!prevData) return error(500, "Previous information does not exist.");
-        // let prevDataLive = JSON.parse(prevData);
+    //     // Retrieve previous info to send email.
+    //     // let prevData = await redis.hGet(pre + "custom-data-list", transaction.invoice_id).catch((_) => error(500, "Previous information does not exist."));
+    //     // if (!prevData) return error(500, "Previous information does not exist.");
+    //     // let prevDataLive = JSON.parse(prevData);
 
-        // // Send confirmation email to user.
-        // let userData = prevDataLive.user;
-        // let transactionData = { carnet_id: prevDataLive.carnet.id, id: transaction.id };
-        // await Promise.all([
-        //     sendEmail({ userData, transactionData }),
-        //     redis.lPush(pre + "emailed-id-list", transaction.id)
-        // ]).catch((_) => error(500, "Unable to send email."));
-        return json({ "message": "Approved request was saved in database." }, { status: 200 });
-    };
+    //     // // Send confirmation email to user.
+    //     // let userData = prevDataLive.user;
+    //     // let transactionData = { carnet_id: prevDataLive.carnet.id, id: transaction.id };
+    //     // await Promise.all([
+    //     //     sendEmail({ userData, transactionData }),
+    //     //     redis.lPush(pre + "emailed-id-list", transaction.id)
+    //     // ]).catch((_) => error(500, "Unable to send email."));
+    //     return json({ "message": "Approved request was saved in database." }, { status: 200 });
+    // };
 
     return error(400, "Body json has a invalid shape.");
 };
