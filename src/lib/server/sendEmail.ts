@@ -1,4 +1,4 @@
-import { GOOGLE_ANEICCOLOMBIA_PASSWORD } from "$env/static/private";
+import { GOOGLE_ANEICCOLOMBIA_PASSWORD, VERCEL_ENV } from "$env/static/private";
 import nodemailer from "nodemailer";
 import mailTemplate from "./mail.html?raw";
 
@@ -28,10 +28,11 @@ export default async function (
     });
 
     try {
+        const pre = VERCEL_ENV === "production" ? "" : "dev:";
         await transporter.sendMail({
             from: { name: "Comité organizador CONEIC 2025", address: "aneic.colombia@gmail.com" },
             to: { name, address },
-            subject: "Confirmación de su participación en el CONEIC 2025", html, attachDataUrls: true
+            subject: pre + "Confirmación de su participación en el CONEIC 2025", html, attachDataUrls: true
         });
         return true;
     } catch (error) {
