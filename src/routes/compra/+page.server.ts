@@ -1,8 +1,30 @@
 import { error } from "@sveltejs/kit";
 import type { PageLoadServer } from "./$types";
 import { PUBLIC_WOMPI_ENDPOINT } from "$env/static/public";
-import { PAYPAL_MODE, PAYPAL_CLIENT_ID, PAYPAL_SECRET } from "$env/static/private";
+import { PAYPAL_CLIENT_ID, PAYPAL_SECRET, VERCEL_ENV } from "$env/static/private";
 import paypal from "@paypal/paypal-server-sdk";
+
+function translateEventResult(paypalBody: any): { status: string, status_message: string } {
+    let status: string;
+    let status_message: string;
+    switch (paypalBody.status) {
+        case "CREATED":
+            status = "ERROR";
+            status_message = "La transacción fue cancelada por el usuario";
+            break;
+        case "COMPLETED":
+            status = "APPROVED";
+            status_message = "";
+            break;
+        default:
+        case "APPROVED":
+            status = "PENDING";
+            status_message = "";
+            break;
+    };
+
+    return { status, status_message };
+};
 
 export const load: PageLoadServer = async ({ url, fetch }) => {
     let id = url.searchParams.get("id");
@@ -23,7 +45,7 @@ export const load: PageLoadServer = async ({ url, fetch }) => {
         // Get an paypal order by its token.
         // https://developer.paypal.com/serversdk/typescript/api-endpoints/orders/get-order
         const client = new paypal.Client({
-            environment: (PAYPAL_MODE === "production") ? paypal.Environment.Production : paypal.Environment.Sandbox,
+            environment: (VERCEL_ENV === "production") ? paypal.Environment.Production : paypal.Environment.Sandbox,
             clientCredentialsAuthCredentials: {
                 oAuthClientId: PAYPAL_CLIENT_ID,
                 oAuthClientSecret: PAYPAL_SECRET
@@ -33,11 +55,7 @@ export const load: PageLoadServer = async ({ url, fetch }) => {
         const orderController = new paypal.OrdersController(client);
         const { body } = await orderController.getOrder({ id: token });
         const live = JSON.parse(body as string);
-        return {
-            id: live.purchase_units[0].invoice_id,
-            status: live.status === "APPROVED" ? "PENDING" : live.status,
-            status_message: "Hubo un error mientras se hacia la transacción." //This message only will be shown if transaction is failed.
-        }
+        return { id: live.purchase_units[0].invoice_id, ...translateEventResult(live) }
     };
 
     throw error(400, "There's no way to identify the transaction.");
