@@ -1,10 +1,39 @@
 import { createClient } from "redis";
 import { REDIS_URL, REDIS_DB_PREFIX as pre } from "$env/static/private";
 import { PAYPAL_MODE, PAYPAL_CLIENT_ID, PAYPAL_SECRET } from "$env/static/private";
+import { GOOGLE_ANEICCOLOMBIA_PASSWORD } from "$env/static/private";
 import { error, json } from "@sveltejs/kit";
 import type { RequestHandler } from "./$types";
-import sendEmail from "$lib/server/sendEmail";
 import paypal from "@paypal/paypal-server-sdk";
+import badges from "../../data/badges.json";
+import nodemailer from "nodemailer";
+import mailTemplate from "./mail.html?raw";
+
+async function sendEmail(userData: { full_name: string, email: string }, transactionData: { carnet_id: string, id: string }) {
+    let carnet = badges.find(i => i.link === transactionData.carnet_id)?.title;
+    if (!carnet) throw "Payment link does not match any carnet"
+
+    let html = mailTemplate
+        .replace("{{name}}", userData.full_name)
+        .replace("{{id}}", transactionData.id)
+        .replace("{{carnet}}", carnet);
+
+    const transporter = nodemailer.createTransport({
+        host: "smtp.gmail.com", port: 465, secure: true,
+        auth: {
+            user: "aneic.colombia@gmail.com",
+            pass: GOOGLE_ANEICCOLOMBIA_PASSWORD
+        }
+    });
+
+    await transporter.sendMail({
+        from: { name: "Comité organizador CONEIC 2025", address: "aneic.colombia@gmail.com" },
+        to: userData.email,
+        subject: "Confirmación de su participación en el CONEIC 2025", html, attachDataUrls: true
+    });
+
+    return true;
+};
 
 async function capturePayment(id: string) {
     const client = new paypal.Client({
@@ -65,7 +94,7 @@ export const POST: RequestHandler = async ({ request }) => {
         let userData = prevDataLive.user;
         let transactionData = { carnet_id: prevDataLive.carnet.id, id: transaction.invoice_id };
         await Promise.all([
-            sendEmail({ userData, transactionData }),
+            sendEmail(userData, transactionData),
             redis.lPush(pre + "emailed-id-list", transaction.invoice_id)
         ]).catch((_) => error(500, "Unable to send email."));
         return json({ "message": "Approved request was saved in database." }, { status: 200 });
