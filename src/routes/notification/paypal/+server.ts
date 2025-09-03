@@ -1,5 +1,5 @@
 import { REDIS_URL, REDIS_DB_PREFIX as pre } from "$env/static/private";
-import { PAYPAL_MODE, PAYPAL_CLIENT_ID, PAYPAL_SECRET } from "$env/static/private";
+import { VERCEL_ENV, PAYPAL_CLIENT_ID, PAYPAL_SECRET } from "$env/static/private";
 import { createClient } from "redis";
 import { error, json } from "@sveltejs/kit";
 import sendEmail from "$lib/server/sendEmail";
@@ -8,7 +8,7 @@ import type { RequestHandler } from "./$types";
 
 async function capturePayment(id: string) {
     const client = new paypal.Client({
-        environment: (PAYPAL_MODE === "production") ? paypal.Environment.Production : paypal.Environment.Sandbox,
+        environment: (VERCEL_ENV === "production") ? paypal.Environment.Production : paypal.Environment.Sandbox,
         clientCredentialsAuthCredentials: {
             oAuthClientId: PAYPAL_CLIENT_ID,
             oAuthClientSecret: PAYPAL_SECRET
