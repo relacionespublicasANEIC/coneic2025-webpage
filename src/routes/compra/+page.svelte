@@ -52,6 +52,10 @@
             <p class="text-xl">{data.id}</p>
             <br />
             <p class="text-xs">Guarda este identificador de pago en un lugar seguro.</p>
+            <br />
         {/if}
+
+        <a class="bg-barranquilla-green text-white p-2 rounded-md" href="/"
+            >Vuelve a la página principal</a>
     </section>
 </section>
