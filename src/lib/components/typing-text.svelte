@@ -1,6 +1,6 @@
 <script lang="ts">
     import { onMount } from "svelte";
-    import lines from "../data/lines.json";
+    import lines from "$lib/data/lines.json";
 
     let index = $state(0);
     let direction = $state(1);

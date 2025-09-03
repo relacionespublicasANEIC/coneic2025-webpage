@@ -1,7 +1,7 @@
 <script lang="ts">
     import "../../styles.css";
     import type { PageProps } from "./$types";
-    import Bill from "../../icons/bill.svelte";
+    import Bill from "$lib/icons/bill.svelte";
 
     let { data }: PageProps = $props();
 
@@ -22,7 +22,7 @@
     };
 
     const messageInfo: { [key: string]: string } = {
-        PENDING: "Estamos esperando aún que la transacción se complete.",
+        PENDING: "Estamos esperando aún que la transacción se complete.\nPuedes recargar esta página para revisar si el estado ha cambiado.",
         DECLINED: data.status_message + ".",
         ERROR: data.status_message + ".",
         VOIDED: "La transacción fue cancelada.",
@@ -44,11 +44,14 @@
         <h2>{messageInfo[data.status]}</h2>
         <br />
 
-        {#if data.status === "APPROVED"}
+        {#if data.status === "APPROVED" || data.status === "COMPLETED"}
             <p>Identificador de compra</p>
             <p class="text-xl">{data.id}</p>
             <br />
             <p class="text-xs">Guarda este identificador de pago en un lugar seguro.</p>
+            <br />
         {/if}
+
+        <a class="bg-gray-600 text-white p-2 rounded-md" href="/">Vuelve a la página principal</a>
     </section>
 </section>
