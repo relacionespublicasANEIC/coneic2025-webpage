@@ -1,7 +1,7 @@
 import { REDIS_URL, REDIS_DB_PREFIX as pre } from "$env/static/private";
 import { PAYPAL_MODE, PAYPAL_CLIENT_ID, PAYPAL_SECRET } from "$env/static/private";
 import { PUBLIC_KEY_WOMPI, PUBLIC_PAGE_URL } from "$env/static/public";
-import { INTEGRITY_KEY_WOMPI } from "$env/static/private";
+import { INTEGRITY_KEY_WOMPI, VERCEL_ENV } from "$env/static/private";
 import { redirect, fail } from "@sveltejs/kit";
 import { createClient } from "redis";
 import type { Actions } from "./$types";
@@ -52,7 +52,7 @@ export const actions: Actions = {
             // Create an paypal order.
             // https://developer.paypal.com/serversdk/typescript/api-endpoints/orders/create-order
             const client = new paypal.Client({
-                environment: (PAYPAL_MODE === "production") ? paypal.Environment.Production : paypal.Environment.Sandbox,
+                environment: (VERCEL_ENV === "production") ? paypal.Environment.Production : paypal.Environment.Sandbox,
                 clientCredentialsAuthCredentials: {
                     oAuthClientId: PAYPAL_CLIENT_ID,
                     oAuthClientSecret: PAYPAL_SECRET
