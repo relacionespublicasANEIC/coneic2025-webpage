@@ -4,7 +4,7 @@
 </script>
 
 <script lang="ts">
-    import badges from "../data/badges.json";
+    import badges from "$lib/data/badges.json";
     let { carnet_id }: { carnet_id: string } = $props();
     let badge = $derived(badges.find((i) => i.link === carnet_id)!);
     let isColombian = $state(true);

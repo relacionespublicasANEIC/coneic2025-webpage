@@ -5,7 +5,7 @@ import { GOOGLE_ANEICCOLOMBIA_PASSWORD } from "$env/static/private";
 import { error, json } from "@sveltejs/kit";
 import type { RequestHandler } from "./$types";
 import paypal from "@paypal/paypal-server-sdk";
-import badges from "../../data/badges.json";
+import badges from "$lib/data/badges.json";
 import nodemailer from "nodemailer";
 import mailTemplate from "./mail.html?raw";
 

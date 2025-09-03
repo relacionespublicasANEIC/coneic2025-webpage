@@ -1,13 +1,13 @@
 <script lang="ts">
     import "../styles.css";
-    import RemainingTime from "../components/remaining-time.svelte";
-    import ImageCard from "../components/image-card.svelte";
-    import TypingText from "../components/typing-text.svelte";
-    import BrandInstagram from "../icons/brand-instagram.svelte";
-    import PciCompliant from "../icons/pci-compliant.svelte";
-    import MetadataDialog from "../components/metadata-dialog.svelte";
-    import images from "../data/images.json";
-    import badges from "../data/badges.json";
+    import RemainingTime from "$lib/components/remaining-time.svelte";
+    import ImageCard from "$lib/components/image-card.svelte";
+    import TypingText from "$lib/components/typing-text.svelte";
+    import BrandInstagram from "$lib/icons/brand-instagram.svelte";
+    import PciCompliant from "$lib/icons/pci-compliant.svelte";
+    import MetadataDialog from "$lib/components/metadata-dialog.svelte";
+    import images from "$lib/data/images.json";
+    import badges from "$lib/data/badges.json";
 
     let dialogReference: MetadataDialog;
     let currCarnetId = $state("");

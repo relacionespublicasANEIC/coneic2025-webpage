@@ -1,7 +1,7 @@
 <script lang="ts">
     import "../../styles.css";
     import type { PageProps } from "./$types";
-    import Bill from "../../icons/bill.svelte";
+    import Bill from "$lib/icons/bill.svelte";
 
     let { data }: PageProps = $props();
 

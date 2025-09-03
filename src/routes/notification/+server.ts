@@ -3,7 +3,7 @@ import { REDIS_URL, REDIS_DB_PREFIX as pre } from "$env/static/private";
 import { GOOGLE_ANEICCOLOMBIA_PASSWORD } from "$env/static/private";
 import { error, json } from "@sveltejs/kit";
 import type { RequestHandler } from "./$types";
-import badges from "../../data/badges.json";
+import badges from "$lib/data/badges.json";
 import nodemailer from "nodemailer";
 import mailTemplate from "./mail.html?raw";
 

@@ -7,7 +7,7 @@ import { createClient } from "redis";
 import type { Actions } from "./$types";
 import { randomUUID } from "crypto";
 import paypal from "@paypal/paypal-server-sdk";
-import badges from "../data/badges.json";
+import badges from "$lib/data/badges.json";
 
 // Creates a integrity signature for a wompi transaction.
 // https://docs.wompi.co/docs/colombia/widget-checkout-web
