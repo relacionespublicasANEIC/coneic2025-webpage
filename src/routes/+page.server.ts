@@ -23,6 +23,9 @@ export const actions: Actions = {
     async default({ request }) {
         const data = Object.fromEntries(await request.formData());
 
+        // Check all mandatory fields exist.
+        if (!data.name || !data.email) return fail(400, { message: "Form did not included name nor email." });
+
         // Get carnet info with the id.
         if (!data.carnet_id) return fail(400, { message: "Form did not included carnet's id." });
         const carnetInfo = badges.find(i => i.link === data.carnet_id);
