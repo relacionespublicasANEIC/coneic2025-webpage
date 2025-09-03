@@ -11,6 +11,7 @@
         ERROR: "fill-red-600",
         VOIDED: "fill-gray-500",
         APPROVED: "fill-green-500",
+        COMPLETED: "fill-green-500",
     };
 
     const statusTitle: { [key: string]: string } = {
@@ -19,6 +20,7 @@
         ERROR: "fallida",
         VOIDED: "cancelada",
         APPROVED: "completada",
+        COMPLETED: "completada",
     };
 
     const messageInfo: { [key: string]: string } = {
@@ -27,6 +29,7 @@
         ERROR: data.status_message + ".",
         VOIDED: "La transacción fue cancelada.",
         APPROVED: "A tu correo te llegará la confirmación de tu compra.",
+        COMPLETED: "A tu correo te llegará la confirmación de tu compra.",
     };
 </script>
 
@@ -44,7 +47,7 @@
         <h2>{messageInfo[data.status]}</h2>
         <br />
 
-        {#if data.status === "APPROVED"}
+        {#if data.status === "APPROVED" || data.status === "COMPLETED"}
             <p>Identificador de compra</p>
             <p class="text-xl">{data.id}</p>
             <br />
