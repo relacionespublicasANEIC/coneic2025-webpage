@@ -33,20 +33,20 @@ export const POST: RequestHandler = async ({ request }) => {
     const transaction = body.resource;
     const redis = await createClient({ url: REDIS_URL }).connect().catch((_) => error(500, "Unable to connect to db."));
     if (body.event_type === "CHECKOUT.ORDER.APPROVED") {
-        console.log(`Order ${transaction.invoice_id} has been approved. Starting capture process.`);
+        console.log(`Order ${transaction.id} has been approved. Starting capture process.`);
         await capturePayment(transaction.id).catch((_) => error(500, "Unable to start capture of payment."));
         return json({ message: "Order capture was started." }, { status: 200 });
     };
 
     if (body.event_type === "PAYMENT.CAPTURE.DECLINED") {
-        console.log(`Capturing order ${transaction.invoice_id} has failed.`);
+        console.log(`Capturing order with reference ${transaction.invoice_id} has failed.`);
         await redis.incr(pre + "failed-requests").catch((_) => console.error("Counter did not increment."));
         await redis.hDel(pre + "custom-data-list", transaction.invoice_id).catch((_) => console.error("Info could not be removed"));
         return json({ "message": "This event incremented failure counter by one." }, { status: 200 });
     };
 
     if (body.event_type === "PAYMENT.CAPTURE.COMPLETED") {
-        console.log(`Capturing order ${transaction.invoice_id} has succeded.`);
+        console.log(`Capturing order with reference ${transaction.invoice_id} has succeded.`);
 
         // Save data from notification to db.
         let multi = redis.multi();
@@ -62,7 +62,7 @@ export const POST: RequestHandler = async ({ request }) => {
         let liveData = JSON.parse(prevData);
 
         // Send confirmation email to user.
-        await sendEmail(liveData.user.name, liveData.user.email, liveData.carnet.name, transaction.reference).catch((_) => error(500, "Unable to send email"));
+        await sendEmail(liveData.user.name, liveData.user.email, liveData.carnet.name, transaction.invoice_id).catch((_) => error(500, "Unable to send email"));
         console.log("Confirmation email was sent to user.");
         await redis.lPush(pre + "emailed-id-list", [transaction.invoice_id, liveData.user.email]).catch((_) => console.error("Email was sent but list was not updated."));
         return json({ "message": "Approved request was saved in database." }, { status: 200 });
