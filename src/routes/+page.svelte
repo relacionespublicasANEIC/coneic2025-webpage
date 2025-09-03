@@ -130,8 +130,7 @@
             type="checkbox"
             bind:checked={showPriceInUsd}
             class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
-        <label for="usd-price" class="ms-2 text-sm"
-            >Mostrar precios en dólares.</label>
+        <label for="usd-price" class="ms-2 text-sm">Mostrar precios en dólares.</label>
     </div>
     <main
         id="carnets"
@@ -173,14 +172,22 @@
             </article>
         {/each}
     </main>
-    <div class="w-full flex alig justify-center items-center">
-        <div>
-            <p class="align-middle">Con la tecnología de</p>
-        </div>
-        <div class="w-1/3 md:w-1/5">
-            <PciCompliant />
-        </div>
-    </div>
+    <article>
+        <a class="flex items-center" href="https://wompi.com/es/co/">
+            <div>
+                <p class="text-sm align-middle">Pagos dentro de Colombia con la tecnología de</p>
+            </div>
+            <div class="w-24">
+                <PciCompliant />
+            </div>
+        </a>
+        <a class="flex items-center" href="https://www.paypal.com/">
+            <p class="text-sm align-middle">Pagos internacionales con la tecnología de</p>
+            <div class="w-24 px-4">
+                <img src="/paypal.png" alt="Pago seguro con PayPal" />
+            </div>
+        </a>
+    </article>
 </section>
 
 <MetadataDialog carnet_id={currCarnetId} bind:this={dialogReference} />
