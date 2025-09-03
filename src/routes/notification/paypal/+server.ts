@@ -1,39 +1,10 @@
-import { createClient } from "redis";
 import { REDIS_URL, REDIS_DB_PREFIX as pre } from "$env/static/private";
 import { PAYPAL_MODE, PAYPAL_CLIENT_ID, PAYPAL_SECRET } from "$env/static/private";
-import { GOOGLE_ANEICCOLOMBIA_PASSWORD } from "$env/static/private";
+import { createClient } from "redis";
 import { error, json } from "@sveltejs/kit";
-import type { RequestHandler } from "./$types";
+import sendEmail from "$lib/server/sendEmail";
 import paypal from "@paypal/paypal-server-sdk";
-import badges from "$lib/data/badges.json";
-import nodemailer from "nodemailer";
-import mailTemplate from "./mail.html?raw";
-
-async function sendEmail(userData: { full_name: string, email: string }, transactionData: { carnet_id: string, id: string }) {
-    let carnet = badges.find(i => i.link === transactionData.carnet_id)?.title;
-    if (!carnet) throw "Payment link does not match any carnet"
-
-    let html = mailTemplate
-        .replace("{{name}}", userData.full_name)
-        .replace("{{id}}", transactionData.id)
-        .replace("{{carnet}}", carnet);
-
-    const transporter = nodemailer.createTransport({
-        host: "smtp.gmail.com", port: 465, secure: true,
-        auth: {
-            user: "aneic.colombia@gmail.com",
-            pass: GOOGLE_ANEICCOLOMBIA_PASSWORD
-        }
-    });
-
-    await transporter.sendMail({
-        from: { name: "Comité organizador CONEIC 2025", address: "aneic.colombia@gmail.com" },
-        to: userData.email,
-        subject: "Confirmación de su participación en el CONEIC 2025", html, attachDataUrls: true
-    });
-
-    return true;
-};
+import type { RequestHandler } from "./$types";
 
 async function capturePayment(id: string) {
     const client = new paypal.Client({
@@ -49,21 +20,20 @@ async function capturePayment(id: string) {
 };
 
 // Defines a handler for events from paypal.
-// https://development.coneic.aneiccolombia.com/paypal	2TV3748022168523X
+// https://development.coneic.aneiccolombia.com/paypal
 export const POST: RequestHandler = async ({ request }) => {
     let body = await request.json().catch(() => error(400, "Body is void or not json."));
 
     // Check the body is a PayPal event.
     if (!body?.event_type || !body.resource) {
-        return error(400, "Body json has a invalid shape.");
+        throw error(400, "Body json has a invalid shape.");
     };
 
     // Handle the PayPal event.
     const transaction = body.resource;
     const redis = await createClient({ url: REDIS_URL }).connect().catch((_) => error(500, "Unable to connect to db."));
     if (body.event_type === "CHECKOUT.ORDER.APPROVED") {
-        console.log(`Order ${transaction.invoice_id} has been approved.`);
-        console.log("Starting capture process.");
+        console.log(`Order ${transaction.invoice_id} has been approved. Starting capture process.`);
         await capturePayment(transaction.id).catch((_) => error(500, "Unable to start capture of payment."));
         return json({ message: "Order capture was started." }, { status: 200 });
     };
@@ -84,21 +54,19 @@ export const POST: RequestHandler = async ({ request }) => {
         multi.hSet(pre + "transaction-data-list", transaction.invoice_id, JSON.stringify(transaction))
         multi.lPush(pre + "aproved-transactions-list", transaction.invoice_id);
         await multi.exec().catch((_) => error(500, "Unable to write in db"));
+        console.log("Transaction data was saved in database.");
 
         // Retrieve previous info to send email.
         let prevData = await redis.hGet(pre + "custom-data-list", transaction.invoice_id).catch((_) => error(500, "Previous information does not exist."));
-        if (!prevData) return error(500, "Previous information does not exist.");
-        let prevDataLive = JSON.parse(prevData);
+        if (!prevData) throw error(500, "Previous information does not exist.");
+        let liveData = JSON.parse(prevData);
 
         // Send confirmation email to user.
-        let userData = prevDataLive.user;
-        let transactionData = { carnet_id: prevDataLive.carnet.id, id: transaction.invoice_id };
-        await Promise.all([
-            sendEmail(userData, transactionData),
-            redis.lPush(pre + "emailed-id-list", transaction.invoice_id)
-        ]).catch((_) => error(500, "Unable to send email."));
+        await sendEmail(liveData.user.name, liveData.user.email, liveData.carnet.name, transaction.reference).catch((_) => error(500, "Unable to send email"));
+        console.log("Confirmation email was sent to user.");
+        await redis.lPush(pre + "emailed-id-list", [transaction.invoice_id, liveData.user.email]).catch((_) => console.error("Email was sent but list was not updated."));
         return json({ "message": "Approved request was saved in database." }, { status: 200 });
     };
 
-    return error(400, "Body json has a invalid shape.");
+    return json({ "message": "Event was not handled." }, { status: 200 });
 };
