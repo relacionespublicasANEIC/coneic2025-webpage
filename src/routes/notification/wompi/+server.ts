@@ -22,11 +22,11 @@ export const POST: RequestHandler = async ({ request }) => {
 
     const redis = await createClient({ url: REDIS_URL }).connect().catch((_) => error(500, "Unable to connect to db."));
     let transaction = body.data.transaction;
-    console.log(`Handling event with transaction ${transaction.reference}`);
+    console.log(`Handling event of transaction with reference ${transaction.reference}`);
     //Posible values: PENDING, APPROVED, DECLINED, ERROR, VOIDED
 
     if (transaction.status === "DECLINED" || transaction.status === "ERROR" || transaction.status === "VOIDED") {
-        console.log("Transaction was failed.");
+        console.log(`Transaction with reference ${transaction.reference} was failed.`);
         await redis.incr(pre + "failed-requests").catch((_) => console.error("Counter did not increment."));
         await redis.hDel(pre + "custom-data-list", transaction.reference).catch((_) => console.error("Info could not be removed"));
         return json({ "message": "This event incremented failure counter by one." }, { status: 200 });
@@ -39,7 +39,7 @@ export const POST: RequestHandler = async ({ request }) => {
         multi.hSet(pre + "transaction-data-list", transaction.id, JSON.stringify(transaction))
         multi.lPush(pre + "aproved-transactions-list", transaction.id);
         await multi.exec().catch((_) => error(500, "Unable to write in db"));
-        console.log("Transaction data was saved in database.");
+        console.log(`Transaction with reference ${transaction.reference} was saved in database.`);
 
         // Retrieve previous info to send email
         let prevData = await redis.hGet(pre + "custom-data-list", transaction.reference).catch((_) => error(500, "Previous information does not exist."));
