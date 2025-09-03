@@ -11,7 +11,6 @@
         ERROR: "fill-red-600",
         VOIDED: "fill-gray-500",
         APPROVED: "fill-green-500",
-        COMPLETED: "fill-green-500",
     };
 
     const statusTitle: { [key: string]: string } = {
@@ -20,16 +19,14 @@
         ERROR: "fallida",
         VOIDED: "cancelada",
         APPROVED: "completada",
-        COMPLETED: "completada",
     };
 
     const messageInfo: { [key: string]: string } = {
-        PENDING: "Estamos esperando aún que la transacción se complete.",
+        PENDING: "Estamos esperando aún que la transacción se complete.\nPuedes recargar esta página para revisar si el estado ha cambiado.",
         DECLINED: data.status_message + ".",
         ERROR: data.status_message + ".",
         VOIDED: "La transacción fue cancelada.",
         APPROVED: "A tu correo te llegará la confirmación de tu compra.",
-        COMPLETED: "A tu correo te llegará la confirmación de tu compra.",
     };
 </script>
 
@@ -55,7 +52,6 @@
             <br />
         {/if}
 
-        <a class="bg-barranquilla-green text-white p-2 rounded-md" href="/"
-            >Vuelve a la página principal</a>
+        <a class="bg-gray-600 text-white p-2 rounded-md" href="/">Vuelve a la página principal</a>
     </section>
 </section>
