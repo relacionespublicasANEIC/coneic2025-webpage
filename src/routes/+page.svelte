@@ -123,6 +123,8 @@
     </section>
 </main>
 
+<!--
+
 <section class="p-8">
     <div class="flex items-center pb-4">
         <input
@@ -191,6 +193,8 @@
 </section>
 
 <MetadataDialog carnet_id={currCarnetId} bind:this={dialogReference} />
+
+-->
 
 <style>
     .instagram-button {
