@@ -47,7 +47,7 @@ export const POST: RequestHandler = async ({ request }) => {
         let liveData = JSON.parse(prevData);
 
         // Send confirmation email to user.
-        await sendEmail(liveData.user.name, liveData.user.email, liveData.carnet.name, transaction.id).catch((_) => error(500, "Unable to send email"));
+        await sendEmail(liveData.user.name, liveData.user.email, liveData.carnet.name, transaction.reference).catch((_) => error(500, "Unable to send email"));
         console.log("Confirmation email was sent to user.");
         await redis.lPush(pre + "emailed-id-list", [transaction.id, liveData.user.email]).catch((_) => console.error("Email was sent but list was not updated."));
         return json({ "message": "Approved request was saved in database." }, { status: 200 });
