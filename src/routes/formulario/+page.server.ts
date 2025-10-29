@@ -38,7 +38,7 @@ export const actions: Actions = {
             // Create a wompi transaction url.
             // https://docs.wompi.co/docs/colombia/widget-checkout-web/#web-checkout
             const integrity = await createIntegritySignature(reference, carnetInfo.price_in_cents);
-            const requestUrl = new URL("https://checkout.wompi.co/p/");
+            const requestUrl = new URL("https://example.com/p/");
             requestUrl.searchParams.append("public-key", PUBLIC_KEY_WOMPI);
             requestUrl.searchParams.append("currency", "COP");
             requestUrl.searchParams.append("amount-in-cents", carnetInfo.price_in_cents);
