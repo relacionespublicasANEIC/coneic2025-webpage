@@ -61,33 +61,51 @@
     ];
 </script>
 
-<section class="p-4 flex gap-4">
-    <section class="w-1/4 p-4 border-2 rounded-md space-y-2 flex flex-col">
-        <form method="post" action="?/find_user" class="space-y-2">
-            <label for="buy">Ingresa el número de tu compra que aparece en el carné</label>
-            <input type="text" id="buy" name="buy" class="border-2 w-full" required />
-            <button type="submit" class="border-2 px-2">Validar</button>
+<section class="p-6 flex gap-6 bg-gray-50 font-sans text-gray-800">
+    <section
+        class="w-1/4 p-4 bg-white rounded-lg space-y-4 flex flex-col h-fit border border-gray-200">
+        <form method="post" action="?/find_user" class="space-y-3">
+            <h2 class="text-lg font-semibold border-b pb-1 border-gray-300">
+                Validación de compra
+            </h2>
+            <div class="space-y-1">
+                <label for="buy" class="block text-xs font-medium text-gray-700"
+                    >Ingresa el correo al que llegó tu carné</label>
+                <input
+                    type="email"
+                    id="buy"
+                    name="buy"
+                    class="mt-1 block w-full px-2 py-1.5 border border-gray-300 rounded-sm text-sm focus:outline-none focus:ring-1 focus:ring-gray-500 focus:border-gray-500"
+                    required />
+            </div>
+            <button
+                type="submit"
+                class="w-full bg-gray-700 text-white py-1.5 rounded-sm text-sm hover:bg-gray-800 transition duration-150 ease-in-out font-medium focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-1">
+                Validar
+            </button>
         </form>
 
         {#if form}
-            <article class="text-center space-y-2 grow flex flex-col align-middle justify-center">
-                <div>
-                    <h3>Nombre</h3>
-                    <p>{form.name}</p>
+            <article
+                class="text-center space-y-2 grow flex flex-col align-middle justify-center border-t pt-3 mt-3 border-gray-200">
+                <div class="p-1 bg-gray-50 rounded-sm">
+                    <h3 class="text-xs font-medium text-gray-600">Nombre</h3>
+                    <p class="text-sm font-semibold">{form.name}</p>
                 </div>
 
-                <div>
-                    <h3>Correo</h3>
-                    <p>{form.email}</p>
+                <div class="p-1 bg-gray-50 rounded-sm">
+                    <h3 class="text-xs font-medium text-gray-600">Correo</h3>
+                    <p class="text-sm font-semibold">{form.email}</p>
                 </div>
 
-                <div>
-                    <h3>Universidad</h3>
-                    <p>{form.university}</p>
+                <div class="p-1 bg-gray-50 rounded-sm">
+                    <h3 class="text-xs font-medium text-gray-600">Universidad</h3>
+                    <p class="text-sm font-semibold">{form.university}</p>
                 </div>
 
                 {#if !form.hasArl}
-                    <p class="text-xs">
+                    <p
+                        class="text-xs p-2 bg-yellow-50 text-yellow-800 rounded-sm mt-3 border border-yellow-200">
                         No recibimos información de ARL de tu universidad, por lo que no podrás
                         escoger algunas salidas académicas.
                     </p>
@@ -99,15 +117,18 @@
     <form
         action="?/append_user"
         method="post"
-        class="w-3/4 p-4 border-2 rounded-md space-y-2 {form ? '' : 'bg-amber-200'} ">
+        class="w-3/4 p-4 bg-white rounded-lg space-y-4 border border-gray-200 {form
+            ? ''
+            : 'bg-gray-100 opacity-60 pointer-events-none'} ">
         <input type="text" name="reference" id={form?.reference} hidden />
 
-        <main class="space-y-2">
-            <div>
-                <h2 class="text-2xl">Taller</h2>
-                <h3 class="text-md">Jueves, 6 de noviembre de 2025</h3>
+        <main class="space-y-3">
+            <div class="border-b pb-0.5 border-gray-300">
+                <h2 class="text-xl font-bold">Taller</h2>
+                <h3 class="text-sm text-gray-700 mt-0.5">Jueves, 6 de noviembre de 2025</h3>
             </div>
-            <div class="grid grid-cols-3 gap-2">
+
+            <div class="grid grid-cols-3 gap-3">
                 {#each workshops as work}
                     <div class="flex h-full w-full">
                         <input
@@ -120,21 +141,27 @@
                             value={work.id} />
                         <label
                             for={work.id}
-                            class="border-2 rounded-md p-2 peer-checked:bg-amber-200 w-full peer-disabled:bg-red-400">
-                            <h3 class="text-xl">{work.name}</h3>
-                            <p>{work.hour}</p>
+                            class="block w-full cursor-pointer p-3 border border-gray-300 rounded-sm transition duration-150 ease-in-out
+                                   peer-checked:bg-white peer-checked:text-gray-800 peer-checked:border-gray-800 peer-checked:ring-2 peer-checked:ring-gray-800
+                                   hover:border-gray-500 hover:bg-gray-50
+                                   peer-disabled:bg-gray-100 peer-disabled:text-gray-400 peer-disabled:cursor-not-allowed peer-disabled:hover:border-gray-300 peer-disabled:hover:bg-gray-100">
+                            <h3 class="text-base font-semibold">{work.name}</h3>
+                            <p class="text-xs mt-1 text-gray-700 peer-checked:text-gray-700">
+                                {work.hour}
+                            </p>
                         </label>
                     </div>
                 {/each}
             </div>
         </main>
 
-        <main class="space-y-2">
-            <div>
-                <h2 class="text-2xl">Salida académica</h2>
-                <h3 class="text-md">Viernes, 7 de noviembre de 2025</h3>
+        <main class="space-y-3">
+            <div class="border-b pb-0.5 border-gray-300">
+                <h2 class="text-xl font-bold">Salida académica</h2>
+                <h3 class="text-sm text-gray-700 mt-0.5">Viernes, 7 de noviembre de 2025</h3>
             </div>
-            <div class="grid grid-cols-3 gap-2">
+
+            <div class="grid grid-cols-3 gap-3">
                 {#each field_trips as trip}
                     <div class="flex h-full w-full">
                         <input
@@ -147,20 +174,32 @@
                             value={trip.id} />
                         <label
                             for={trip.id}
-                            class="border-2 rounded-md p-2 peer-checked:bg-amber-200 w-full peer-disabled:bg-red-400">
-                            <h3 class="text-xl">{trip.name}</h3>
+                            class="block w-full cursor-pointer p-3 border border-gray-300 rounded-sm transition duration-150 ease-in-out
+                                   peer-checked:bg-white peer-checked:text-gray-800 peer-checked:border-gray-800 peer-checked:ring-2 peer-checked:ring-gray-800
+                                   hover:border-gray-500 hover:bg-gray-50
+                                   peer-disabled:bg-gray-100 peer-disabled:text-gray-400 peer-disabled:cursor-not-allowed peer-disabled:hover:border-gray-300 peer-disabled:hover:bg-gray-100">
+                            <h3 class="text-base font-semibold">{trip.name}</h3>
 
-                            <p class="text-xs">
-                                Salimos de {trip.exit_point} a las {trip.hour}
+                            <p class="text-xs mt-2 text-gray-700 peer-checked:text-gray-700">
+                                {trip.exit_point} - {trip.hour}
                             </p>
+
+                            {#if !form || (trip.arl_mandatory && !form.hasArl)}
+                                <p class="text-xs mt-1 font-medium text-red-600">¡Requiere ARL!</p>
+                            {/if}
                         </label>
                     </div>
                 {/each}
             </div>
         </main>
-        <main>
+
+        <main class="border-t pt-3 mt-3 border-gray-200">
             {#if form}
-                <button type="submit" class="px-2 border-2">Enviar</button>
+                <button
+                    type="submit"
+                    class="w-full bg-gray-800 text-white py-2 rounded-sm hover:bg-gray-900 transition duration-150 ease-in-out font-semibold text-base focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-1">
+                    Enviar
+                </button>
             {/if}
         </main>
     </form>
