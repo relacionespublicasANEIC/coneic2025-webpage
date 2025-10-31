@@ -2,7 +2,7 @@
     import "./../../styles.css";
     import type { PageProps } from "./$types";
 
-    let { form }: PageProps = $props();
+    let { form, data }: PageProps = $props();
 
     const workshops = [
         {
@@ -64,17 +64,17 @@
 <section class="p-6 flex gap-6 bg-gray-50 font-sans text-gray-800">
     <section
         class="w-1/4 p-4 bg-white rounded-lg space-y-4 flex flex-col h-fit border border-gray-200">
-        <form method="post" action="?/find_user" class="space-y-3">
+        <form method="get" class="space-y-3">
             <h2 class="text-lg font-semibold border-b pb-1 border-gray-300">
                 Validación de compra
             </h2>
             <div class="space-y-1">
-                <label for="buy" class="block text-xs font-medium text-gray-700"
+                <label for="email" class="block text-xs font-medium text-gray-700"
                     >Ingresa el correo al que llegó tu carné</label>
                 <input
                     type="email"
-                    id="buy"
-                    name="buy"
+                    id="email"
+                    name="email"
                     class="mt-1 block w-full px-2 py-1.5 border border-gray-300 rounded-sm text-sm focus:outline-none focus:ring-1 focus:ring-gray-500 focus:border-gray-500"
                     required />
             </div>
@@ -85,25 +85,25 @@
             </button>
         </form>
 
-        {#if form}
+        {#if !data.void}
             <article
                 class="text-center space-y-2 grow flex flex-col align-middle justify-center border-t pt-3 mt-3 border-gray-200">
                 <div class="p-1 bg-gray-50 rounded-sm">
                     <h3 class="text-xs font-medium text-gray-600">Nombre</h3>
-                    <p class="text-sm font-semibold">{form.name}</p>
+                    <p class="text-sm font-semibold">{data.name}</p>
                 </div>
 
                 <div class="p-1 bg-gray-50 rounded-sm">
                     <h3 class="text-xs font-medium text-gray-600">Correo</h3>
-                    <p class="text-sm font-semibold">{form.email}</p>
+                    <p class="text-sm font-semibold">{data.email}</p>
                 </div>
 
                 <div class="p-1 bg-gray-50 rounded-sm">
                     <h3 class="text-xs font-medium text-gray-600">Universidad</h3>
-                    <p class="text-sm font-semibold">{form.university}</p>
+                    <p class="text-sm font-semibold">{data.university}</p>
                 </div>
 
-                {#if !form.hasArl}
+                {#if !data.hasArl}
                     <p
                         class="text-xs p-2 bg-yellow-50 text-yellow-800 rounded-sm mt-3 border border-yellow-200">
                         No recibimos información de ARL de tu universidad, por lo que no podrás
@@ -115,12 +115,11 @@
     </section>
 
     <form
-        action="?/append_user"
         method="post"
-        class="w-3/4 p-4 bg-white rounded-lg space-y-4 border border-gray-200 {form
-            ? ''
-            : 'bg-gray-100 opacity-60 pointer-events-none'} ">
-        <input type="text" name="reference" id={form?.reference} hidden />
+        class="w-3/4 p-4 bg-white rounded-lg space-y-4 border peer border-gray-200 {data.void
+            ? 'bg-gray-100 opacity-60 pointer-events-none'
+            : ''} ">
+        <input type="text" name="reference" value={data.reference} hidden />
 
         <main class="space-y-3">
             <div class="border-b pb-0.5 border-gray-300">
@@ -137,7 +136,7 @@
                             required
                             id={work.id}
                             name="workshop"
-                            disabled={!form}
+                            disabled={data.void}
                             value={work.id} />
                         <label
                             for={work.id}
@@ -170,7 +169,7 @@
                             required
                             id={trip.id}
                             name="field_trip"
-                            disabled={!form || (trip.arl_mandatory && !form.hasArl)}
+                            disabled={trip.arl_mandatory && !data.hasArl}
                             value={trip.id} />
                         <label
                             for={trip.id}
@@ -184,8 +183,12 @@
                                 {trip.exit_point} - {trip.hour}
                             </p>
 
-                            {#if !form || (trip.arl_mandatory && !form.hasArl)}
-                                <p class="text-xs mt-1 font-medium text-red-600">¡Requiere ARL!</p>
+                            {#if !data.void}
+                                {#if trip.arl_mandatory && !data.hasArl}
+                                    <p class="text-xs mt-1 font-medium text-red-600">
+                                        ¡Requiere ARL!
+                                    </p>
+                                {/if}
                             {/if}
                         </label>
                     </div>
@@ -194,7 +197,7 @@
         </main>
 
         <main class="border-t pt-3 mt-3 border-gray-200">
-            {#if form}
+            {#if !data.void}
                 <button
                     type="submit"
                     class="w-full bg-gray-800 text-white py-2 rounded-sm hover:bg-gray-900 transition duration-150 ease-in-out font-semibold text-base focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-1">
