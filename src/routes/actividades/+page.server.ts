@@ -1,0 +1,120 @@
+import type { Actions } from './$types';
+import { REDIS_URL, REDIS_DB_PREFIX as pre } from "$env/static/private";
+import { error, json, fail, redirect } from "@sveltejs/kit";
+import { createClient } from "redis";
+import type { PageServerLoad } from './$types';
+
+export const load: PageServerLoad = async ({ url }) => {
+    let formData = url.searchParams;
+    let email_reference = formData.get("email");
+
+    const redis = await createClient({ url: REDIS_URL }).connect().catch((_) => error(500, "Unable to connect to db."));
+    let number = await redis.hGetAll(pre + "activities-positions");
+
+    if (!email_reference) { return { void: true, quantity: number } };
+
+    // we will search for the email in the list
+    let info;
+    let ref;
+    try {
+        // first, we'll look for email position
+        let rr = await redis.lPos(pre + "emailed-id-list", email_reference.toString());
+        if (!rr) throw "";
+
+        // luego, we'll look for transaction number, relative to email.
+        let transaction_number = await redis.lIndex(pre + "emailed-id-list", rr + 1);
+        if (!transaction_number) throw "";
+
+        // with email, we'll search transaction information
+        let transaction_info = await redis.hGet(pre + "transaction-data-list", transaction_number);
+        if (!transaction_info) throw "";
+        let d = JSON.parse(transaction_info);
+
+        // then we'll transaction reference
+        let transaction_ref: string = (d?.invoice_id || d?.reference);
+        if (!transaction_ref) throw "";
+
+        // with reference, we'll get client info
+        let user_info = await redis.hGet(pre + "custom-data-list", transaction_ref);
+        if (!user_info) throw "";
+        let user_info_live = JSON.parse(user_info);
+        info = user_info_live;
+        ref = transaction_ref;
+
+    } catch (e) {
+        console.error(e);
+        fail(400);
+    }
+
+    return {
+        void: false,
+        reference: ref,
+        name: info.user.name,
+        email: info.user.email,
+        university: info.user.university,
+        hasArl: true,
+        quantity: number
+    };
+};
+
+
+export const actions: Actions = {
+    default: async ({ request }) => {
+
+        let formData = await request.formData();
+        let ref = formData.get("reference");
+        let taller = formData.get("workshop");
+        let salida = formData.get("field_trip");
+
+        if (!ref || !taller || !salida) {
+            return fail(400, {});
+        }
+
+
+        const redis = await createClient({ url: REDIS_URL }).connect().catch((_) => error(500, "Unable to connect to db."));
+        let number = await redis.hGetAll(pre + "activities-positions");
+
+        const limits: { [k: string]: number } = {
+            "ptar": 15,
+            "euskadi": 30,
+            "python": 36,
+            "mallorquin": 15,
+            "palermo": 15,
+            "argos1": 15,
+            "argos2": 15,
+            "acero": 30,
+        }
+
+        let info = await redis.hGet(pre + "person-activity", ref.toString());
+        if (info) {
+            return {
+                complete: true,
+                message: "Ya hiciste tu registro"
+            }
+        }
+
+        if ((parseInt(number[taller.toString()], 10) + 1) > limits[taller.toString()]) {
+            console.error("Taller completo");
+            return fail(400);
+        }
+
+        if ((parseInt(number[salida.toString()], 10) + 1) > limits[salida.toString()]) {
+            console.error("Salida completa");
+            return fail(400);
+        }
+
+
+        // set values
+        let multi = redis.multi();
+        multi.hIncrBy(pre + "activities-positions", taller.toString(), 1);
+        multi.hIncrBy(pre + "activities-positions", salida.toString(), 1);
+        multi.hSet(pre + "person-activity", ref.toString(), JSON.stringify([taller, salida]));
+        await multi.exec();
+
+
+        return {
+            complete: true,
+            message: "Registro completo"
+        }
+    }
+}
