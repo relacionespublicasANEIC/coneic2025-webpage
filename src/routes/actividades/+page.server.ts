@@ -19,7 +19,7 @@ export const load: PageServerLoad = async ({ url }) => {
     try {
         // first, we'll look for email position
         let rr = await redis.lPos(pre + "emailed-id-list", email_reference.toString());
-        if (!rr) throw "";
+        if (rr === null) throw "";
 
         // luego, we'll look for transaction number, relative to email.
         let transaction_number = await redis.lIndex(pre + "emailed-id-list", rr + 1);
