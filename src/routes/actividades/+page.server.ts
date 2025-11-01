@@ -46,8 +46,6 @@ export const load: PageServerLoad = async ({ url }) => {
         fail(400);
     }
 
-    console.log(info);
-
     return {
         void: false,
         reference: ref,
@@ -74,6 +72,37 @@ export const actions: Actions = {
 
 
         const redis = await createClient({ url: REDIS_URL }).connect().catch((_) => error(500, "Unable to connect to db."));
+        let number = await redis.hGetAll(pre + "activities-positions");
+
+        const limits: { [k: string]: number } = {
+            "ptar": 15,
+            "euskadi": 30,
+            "python": 36,
+            "mallorquin": 15,
+            "palermo": 15,
+            "argos1": 15,
+            "argos2": 15,
+            "acero": 30,
+        }
+
+        let info = await redis.hGet(pre + "person-activity", ref.toString());
+        if (info) {
+            return {
+                complete: true,
+                message: "Ya hiciste tu registro"
+            }
+        }
+
+        if ((parseInt(number[taller.toString()], 10) + 1) > limits[taller.toString()]) {
+            console.error("Taller completo");
+            return fail(400);
+        }
+
+        if ((parseInt(number[salida.toString()], 10) + 1) > limits[salida.toString()]) {
+            console.error("Salida completa");
+            return fail(400);
+        }
+
 
         // set values
         let multi = redis.multi();
@@ -84,7 +113,8 @@ export const actions: Actions = {
 
 
         return {
-            complete: true
+            complete: true,
+            message: "Registro completo"
         }
     }
 }

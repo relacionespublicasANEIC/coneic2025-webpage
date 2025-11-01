@@ -208,7 +208,7 @@
             {/if}
 
             {#if form?.complete}
-                <p>Registro completo.</p>
+                <p>{form?.message}</p>
             {/if}
         </main>
     </form>
