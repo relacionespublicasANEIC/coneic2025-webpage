@@ -85,6 +85,8 @@
             </button>
         </form>
 
+        <!-- {JSON.stringify(data)} -->
+
         {#if !data.void}
             <article
                 class="text-center space-y-2 grow flex flex-col align-middle justify-center border-t pt-3 mt-3 border-gray-200">
@@ -203,6 +205,10 @@
                     class="w-full bg-gray-800 text-white py-2 rounded-sm hover:bg-gray-900 transition duration-150 ease-in-out font-semibold text-base focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-1">
                     Enviar
                 </button>
+            {/if}
+
+            {#if form?.complete}
+                <p>Registro completo.</p>
             {/if}
         </main>
     </form>

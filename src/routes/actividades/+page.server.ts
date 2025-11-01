@@ -8,9 +8,10 @@ export const load: PageServerLoad = async ({ url }) => {
     let formData = url.searchParams;
     let email_reference = formData.get("email");
 
-    if (!email_reference) { return { void: true } };
-
     const redis = await createClient({ url: REDIS_URL }).connect().catch((_) => error(500, "Unable to connect to db."));
+    let number = await redis.hGetAll(pre + "activities-positions");
+
+    if (!email_reference) { return { void: true, quantity: number } };
 
     // we will search for the email in the list
     let info;
@@ -53,7 +54,8 @@ export const load: PageServerLoad = async ({ url }) => {
         name: info.user.name,
         email: info.user.email,
         university: info.user.university,
-        hasArl: true
+        hasArl: true,
+        quantity: number
     };
 };
 
@@ -70,10 +72,19 @@ export const actions: Actions = {
             return fail(400, {});
         }
 
-        console.log(ref.toString(), taller.toString(), salida.toString());
 
-        redirect(300, "https://example.com");
-        // check if there is space, then add to list.
-        // if user is already in the list, fuck them
+        const redis = await createClient({ url: REDIS_URL }).connect().catch((_) => error(500, "Unable to connect to db."));
+
+        // set values
+        let multi = redis.multi();
+        multi.hIncrBy(pre + "activities-positions", taller.toString(), 1);
+        multi.hIncrBy(pre + "activities-positions", salida.toString(), 1);
+        multi.hSet(pre + "person-activity", ref.toString(), JSON.stringify([taller, salida]));
+        await multi.exec();
+
+
+        return {
+            complete: true
+        }
     }
 }
