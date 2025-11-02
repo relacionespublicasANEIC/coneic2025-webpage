@@ -156,7 +156,7 @@
             </div>
         </main>
 
-        <main class="space-y-3">
+        <!-- <main class="space-y-3">
             <div class="border-b pb-0.5 border-gray-300">
                 <h2 class="text-xl font-bold">Salida académica</h2>
                 <h3 class="text-sm text-gray-700 mt-0.5">Viernes, 7 de noviembre de 2025</h3>
@@ -196,7 +196,7 @@
                     </div>
                 {/each}
             </div>
-        </main>
+        </main> -->
 
         <main class="border-t pt-3 mt-3 border-gray-200">
             {#if !data.void}

@@ -64,7 +64,7 @@ export const actions: Actions = {
         let formData = await request.formData();
         let ref = formData.get("reference");
         let taller = formData.get("workshop");
-        let salida = formData.get("field_trip");
+        let salida = "acero";
 
         if (!ref || !taller || !salida) {
             return fail(400, {});
@@ -82,7 +82,7 @@ export const actions: Actions = {
             "palermo": 15,
             "argos1": 15,
             "argos2": 15,
-            "acero": 30,
+            "acero": 100,
         }
 
         let info = await redis.hGet(pre + "person-activity", ref.toString());
