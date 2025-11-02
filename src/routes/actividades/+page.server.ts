@@ -94,13 +94,17 @@ export const actions: Actions = {
         }
 
         if ((parseInt(number[taller.toString()], 10) + 1) > limits[taller.toString()]) {
-            console.error("Taller completo");
-            return fail(400);
+            return {
+                complete: true,
+                message: "Ya los cupos están completos. Registro no realizado."
+            }
         }
 
         if ((parseInt(number[salida.toString()], 10) + 1) > limits[salida.toString()]) {
-            console.error("Salida completa");
-            return fail(400);
+            return {
+                complete: true,
+                message: "Ya los cupos están completos. Registro no realizado."
+            }
         }
 
 
